@@ -1,0 +1,34 @@
+
+.main-page-logo{
+    background-color: #91d5ff;
+    width: 50vw;
+    height: 50vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.temporary-logo{
+    font-size: 70px;
+    letter-spacing: 7px;
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 20%;
+    left: 20%;
+}
+
+.main-page-header-toolbar{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    height: 8vh;
+    background-color: #91d5ff;
+}
+
+.ant-layout-header.main-page-header-toolbar{
+    background-color: #91d5ff;
+}
+
+@import './cup-animation.css';
