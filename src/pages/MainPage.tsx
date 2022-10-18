@@ -1,10 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import "../css/MainPage.css";
 import { Layout, Typography } from "antd";
 import CustomButton from "../components/CustomButton";
 
 const MainPage = () => {
-  const loginHandler = () => console.log("login");
-  const signUpHandler = () => console.log("sign up");
+  const navigate = useNavigate();
+
+  const loginHandler = () => {
+    navigate("/login");
+  };
+  const signUpHandler = () => {
+    navigate("/sign_up");
+  };
 
   return (
     <Layout>
