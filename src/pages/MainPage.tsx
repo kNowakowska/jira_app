@@ -6,11 +6,21 @@ const MainPage = () => {
   const loginHandler = () => console.log("login");
   const signUpHandler = () => console.log("sign up");
 
+  // Example usage of Docker env variables
+  // Should extract it to .env file and fetch these from there.
+  // We should grab the backend url + port from variable from docker.
+  // This is mandatory when we will be building application by compose file.
+  const dockerEnvExample = () => {
+    console.log(process.env.REACT_APP_BACKEND_URL)
+    console.log(process.env.REACT_APP_BACKEND_PORT)
+  }
+
   return (
     <Layout>
       <Layout.Header className="main-page-header-toolbar">
         <CustomButton onClick={loginHandler}>Zaloguj się</CustomButton>
         <CustomButton onClick={signUpHandler}>Zarejestruj się</CustomButton>
+        <CustomButton onClick={dockerEnvExample}>Test Docker Env</CustomButton>
       </Layout.Header>
       <Layout.Content className="main-page-logo">
         <Typography className="temporary-logo">JIRA</Typography>

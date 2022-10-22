@@ -1,3 +1,24 @@
+# How to run in docker
+### Example usage of environment variables.
+1. Remove existing image if necessary
+    ```shell
+    docker image rm jira_frontend
+    ```
+2. Build new docker image if necessary
+    ```shell
+      docker build -t jira_frontend .
+    ```
+3. Run built image
+    ```shell
+    docker run -itd \
+       -e REACT_APP_BACKEND_URL=localhost \
+       -e REACT_APP_BACKEND_PORT=8080 \
+       -p 3000:3000 \
+       --name jira_frontend_local \
+       jira_frontend
+    ```
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
