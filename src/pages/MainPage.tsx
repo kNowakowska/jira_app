@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "../css/MainPage.css";
-import { Layout, Typography } from "antd";
-import CustomButton from "../components/CustomButton";
+import { Layout, Typography, Button } from "antd";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -9,6 +8,7 @@ const MainPage = () => {
   const loginHandler = () => {
     navigate("/login");
   };
+  
   const signUpHandler = () => {
     navigate("/sign_up");
   };
@@ -16,8 +16,12 @@ const MainPage = () => {
   return (
     <Layout>
       <Layout.Header className="main-page-header-toolbar">
-        <CustomButton onClick={loginHandler}>Zaloguj się</CustomButton>
-        <CustomButton onClick={signUpHandler}>Zarejestruj się</CustomButton>
+        <Button onClick={loginHandler} type="primary" size="large" className="btn-margin">
+          Zaloguj się
+        </Button>
+        <Button onClick={signUpHandler} type="primary" size="large" className="btn-margin">
+          Zarejestruj się
+        </Button>
       </Layout.Header>
       <Layout.Content className="main-page-logo">
         <Typography className="temporary-logo">JIRA</Typography>

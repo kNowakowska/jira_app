@@ -31,4 +31,9 @@
     background-color: #91d5ff;
 }
 
+.btn-margin{
+    margin-left: 10px;
+    margin-right: 10px
+}
+
 @import './cup-animation.css';
