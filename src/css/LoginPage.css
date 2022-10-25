@@ -1,0 +1,54 @@
+.login-content{
+    background-color: #91d5ff;
+    width: 50vw;
+    height: 50vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form{
+    width: 75%;
+}
+
+.btn-margin{
+    margin-left: 30px;
+    margin-right: 30px
+}
+
+.cancel-btn{
+    background-color: #bae7ff;
+    border-color:#91d5ff;
+}
+.cancel-btn:hover{
+    background-color: #bae7ff;
+    border-color:#91d5ff;
+}
+
+.ant-input{
+    background: #bae7ff;
+}
+
+.login-input{
+    background: #bae7ff;
+}
+
+input.ant-input-status-error{
+    background: #fff0f6 !important;
+    border-color:#ffadd2 !important;
+}
+.ant-input-affix-wrapper-status-error{
+    background: #fff0f6 !important;
+    border-color:#ffadd2 !important;
+
+
+}
+
+.ant-input-affix-wrapper-status-error .ant-input{
+    background: #fff0f6 !important;
+}
+

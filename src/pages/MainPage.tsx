@@ -1,10 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import "../css/MainPage.css";
-import { Layout, Typography } from "antd";
-import CustomButton from "../components/CustomButton";
+import { Layout, Typography, Button } from "antd";
 
 const MainPage = () => {
-  const loginHandler = () => console.log("login");
-  const signUpHandler = () => console.log("sign up");
+  const navigate = useNavigate();
+
+  const loginHandler = () => {
+    navigate("/login");
+  };
+  
+  const signUpHandler = () => {
+    navigate("/sign_up");
+  };
 
   // Example usage of Docker env variables
   // Should extract it to .env file and fetch these from there.
@@ -18,9 +25,15 @@ const MainPage = () => {
   return (
     <Layout>
       <Layout.Header className="main-page-header-toolbar">
-        <CustomButton onClick={loginHandler}>Zaloguj się</CustomButton>
-        <CustomButton onClick={signUpHandler}>Zarejestruj się</CustomButton>
-        <CustomButton onClick={dockerEnvExample}>Test Docker Env</CustomButton>
+        <Button onClick={loginHandler} type="primary" size="large" className="btn-margin">
+          Zaloguj się
+        </Button>
+        <Button onClick={signUpHandler} type="primary" size="large" className="btn-margin">
+          Zarejestruj się
+        </Button>
+        <Button onClick={dockerEnvExample} type="primary" size="large" className="btn-margin">
+          Test Docker Env
+        </Button>
       </Layout.Header>
       <Layout.Content className="main-page-logo">
         <Typography className="temporary-logo">JIRA</Typography>
