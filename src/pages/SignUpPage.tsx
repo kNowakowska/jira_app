@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Layout, Button, Form, Input } from "antd";
 
-const SignUpPage = () => {
+const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatedPassword, setRepeatedPassword] = useState("");
