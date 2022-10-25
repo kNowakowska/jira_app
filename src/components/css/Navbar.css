@@ -1,0 +1,15 @@
+.toolbar{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    height: 8vh;
+    background-color: #91d5ff;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.ant-drawer-body{
+    padding-right: 0;
+    padding-left: 0
+
+}

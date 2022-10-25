@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Layout, Button, Form, Input } from "antd";
 
-const LoginPage = () => {
+const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -44,7 +44,7 @@ const LoginPage = () => {
             <Button htmlType="button" onClick={cancelLogin} size="large" className="btn-margin cancel-btn">
               Cancel
             </Button>
-            <Button type="primary" htmlType="submit" size="large" className="btn-margin" >
+            <Button type="primary" htmlType="submit" size="large" className="btn-margin">
               Sign In
             </Button>
           </Form.Item>

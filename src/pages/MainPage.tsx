@@ -2,13 +2,13 @@ import { useNavigate } from "react-router-dom";
 import "../css/MainPage.css";
 import { Layout, Typography, Button } from "antd";
 
-const MainPage = () => {
+const MainPage: React.FC = () => {
   const navigate = useNavigate();
 
   const loginHandler = () => {
     navigate("/login");
   };
-  
+
   const signUpHandler = () => {
     navigate("/sign_up");
   };
@@ -18,9 +18,9 @@ const MainPage = () => {
   // We should grab the backend url + port from variable from docker.
   // This is mandatory when we will be building application by compose file.
   const dockerEnvExample = () => {
-    console.log(process.env.REACT_APP_BACKEND_URL)
-    console.log(process.env.REACT_APP_BACKEND_PORT)
-  }
+    console.log(process.env.REACT_APP_BACKEND_URL);
+    console.log(process.env.REACT_APP_BACKEND_PORT);
+  };
 
   return (
     <Layout>
