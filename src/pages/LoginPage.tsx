@@ -5,13 +5,20 @@ import { useNavigate } from "react-router-dom";
 
 import { Layout, Button, Form, Input } from "antd";
 
+import { useAppDispatch } from "../redux/hooks";
+import { logIn } from "../redux/systemSlice";
+
+import { user } from "../data";
+
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const signIn = () => {
+    dispatch(logIn(user));
     navigate("/home");
   };
 

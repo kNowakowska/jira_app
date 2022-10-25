@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { useAppSelector } from "../redux/hooks";
 
 import Login from "../pages/LoginPage";
 import SignUp from "../pages/SignUpPage";
@@ -8,8 +9,9 @@ import HomePage from "../pages/HomePage";
 import Navbar from "../components/Navbar";
 
 export const MyRoutes: React.FC = () => {
-  const logged = true;
-  return logged ? (
+  const isLogged = useAppSelector((state) => state.system.isLogged);
+
+  return isLogged ? (
     <>
       <Navbar />
       <Routes>
