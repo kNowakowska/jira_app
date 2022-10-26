@@ -1,0 +1,15 @@
+.column-space {
+    display: "flex";
+    width: 18%;
+    background-color: #bae7ff;
+    padding: 10px
+}
+
+h3.column-title{ 
+    color: white
+
+}
+.column-divider{ 
+    background-color: white;
+    margin: 0 
+}

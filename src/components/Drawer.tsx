@@ -32,9 +32,9 @@ const CustomDrawer: React.FC<DrawerProps> = ({ onClose, open }) => {
       "Your boards",
       "boards",
       <TableOutlined />,
-      loggedUser?.boards?.map((board) => getItem(board.name, board.short))
+      loggedUser?.boards?.map((board) => getItem(<Link to={`/boards/${board.short}`}>{board.name}</Link>, board.short))
     ),
-    getItem(<Link to="/create_board">Create new board</Link>, "create_board", <FormOutlined />),
+    getItem(<Link to="/boards/new">Create new board</Link>, "create_board", <FormOutlined />),
     getItem(<Link to="/profile">My account</Link>, "profile", <UserOutlined />),
     getItem("Log out", "log_out", <LogoutOutlined />),
   ];

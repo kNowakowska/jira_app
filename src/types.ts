@@ -13,3 +13,18 @@ export type UserType = {
   email: string;
   boards: BoardType[] | [];
 };
+
+export type TaskType = {
+  id: string;
+  title: string;
+  description?: string;
+  reporter?: number;
+  assignee?: number;
+  status?: number;
+};
+
+export type ColumnType = {
+  id: string;
+  title: string;
+  taskIds: string[];
+};
