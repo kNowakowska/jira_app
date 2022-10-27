@@ -1,6 +1,7 @@
 import { Space, Typography, Divider } from "antd";
 import { ColumnType, TaskType } from "../types";
 import TaskCard from "./TaskCard";
+import { Droppable } from "react-beautiful-dnd";
 
 import "./css/Column.css";
 
@@ -18,10 +19,16 @@ const Column: React.FC<ColumnPropsType> = ({ column, tasks }: ColumnPropsType) =
         {column.title}
       </Title>
       <Divider className="column-divider" />
-
-      {tasks.map((task: TaskType) => (
-        <TaskCard key={task.id} task={task} />
-      ))}
+      <Droppable droppableId={column.id}>
+        {(provided) => (
+          <div className="droppable-space" ref={provided.innerRef} {...provided.droppableProps}>
+            {tasks.map((task: TaskType, index) => (
+              <TaskCard key={task.id} task={task} index={index} />
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
     </Space>
   );
 };
