@@ -21,7 +21,11 @@ function getItem(label: React.ReactNode, key?: React.Key | null, icon?: React.Re
   } as MenuItem;
 }
 
-const CustomDrawer: React.FC<DrawerProps> = ({ onClose, open }) => {
+type CustomDrawerType = {
+  onClose?: () => void;
+};
+
+const CustomDrawer: React.FC<DrawerProps & CustomDrawerType> = ({ onClose, open }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const loggedUser = useAppSelector((state) => state.system.user);
@@ -34,8 +38,8 @@ const CustomDrawer: React.FC<DrawerProps> = ({ onClose, open }) => {
       <TableOutlined />,
       loggedUser?.boards?.map((board) => getItem(<Link to={`/boards/${board.short}`}>{board.name}</Link>, board.short))
     ),
-    getItem(<Link to="/boards/new">Create new board</Link>, "create_board", <FormOutlined />),
-    getItem(<Link to="/profile">My account</Link>, "profile", <UserOutlined />),
+    getItem(<Link to="/new_board">Create new board</Link>, "create_board", <FormOutlined />),
+    getItem(<Link to={`/profile/${loggedUser?.id}`}>My account</Link>, "profile", <UserOutlined />),
     getItem("Log out", "log_out", <LogoutOutlined />),
   ];
 
@@ -43,6 +47,8 @@ const CustomDrawer: React.FC<DrawerProps> = ({ onClose, open }) => {
     if (key === "log_out") {
       dispatch(logOut());
       navigate("/");
+    } else {
+      onClose?.();
     }
   };
 
