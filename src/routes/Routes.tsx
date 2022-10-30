@@ -7,6 +7,7 @@ import NotFound from "../pages/404Page";
 import MainPage from "../pages/MainPage";
 import HomePage from "../pages/HomePage";
 import BoardPage from "../pages/BoardPage";
+import AccountPage from "../pages/AccountPage";
 import Navbar from "../components/Navbar";
 
 export const MyRoutes: React.FC = () => {
@@ -17,10 +18,10 @@ export const MyRoutes: React.FC = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="boards" element={<BoardPage />}>
-          <Route path=":id" element={<BoardPage />} />
-          <Route path="new" element={<HomePage />} />
-        </Route>
+        <Route path="boards/:id" element={<BoardPage />} />
+        <Route path="new_board" element={<HomePage />} />
+
+        <Route path="profile/:id" element={<AccountPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
