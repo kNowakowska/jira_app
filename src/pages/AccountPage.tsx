@@ -90,7 +90,13 @@ const AccountPage: React.FC = () => {
                 label="Email"
                 name="email"
                 initialValue={loggedUser?.email}
-                rules={[{ required: true, message: "Please input your email!" }]}
+                rules={[
+                  { required: true, message: "Please input your email!" },
+                  {
+                    type: "email",
+                    message: "The input is not valid E-mail!",
+                  },
+                ]}
               >
                 <Input type="email" disabled={!editMode} />
               </Form.Item>

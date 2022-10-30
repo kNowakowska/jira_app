@@ -19,7 +19,7 @@ const LoginPage: React.FC = () => {
 
   const signIn = () => {
     dispatch(logIn(user));
-    navigate("/home");
+    navigate("/");
   };
 
   const cancelLogin = () => {

@@ -1,7 +1,8 @@
 @import '~antd/dist/antd.css';
-*{
+
+* {
   margin: 0;
-  padding:0;
+  padding: 0;
   box-sizing: border-box;
   /* outline: 1px solid #f00 !important; */
 }
@@ -19,11 +20,18 @@
   background-color: transparent;
 }
 
-.ant-card{
+.ant-card {
   color: #40a9ff
 }
 
-.ant-card-head{
+.ant-card-head {
   border-color: #91d5ff;
   color: #40a9ff
+}
+
+h3.page-title {
+  color: white;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: bold;
 }

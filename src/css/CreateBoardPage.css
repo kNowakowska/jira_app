@@ -1,0 +1,24 @@
+.create-board-content {
+    background-color: #91d5ff;
+    width: 90vw;
+    min-height: 50vh;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 30px;
+    padding-bottom: 15px;
+    flex-direction: column;
+}
+
+.login-input {
+    background: #bae7ff;
+}
+
+.create-board-form {
+    width: 75%;
+    justify-content: flex-end;
+    flex-direction: column;
+}

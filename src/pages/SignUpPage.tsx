@@ -35,7 +35,17 @@ const SignUpPage: React.FC = () => {
           autoComplete="off"
           className="register-form"
         >
-          <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input your email!" }]}>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, message: "Please input your email!" },
+              {
+                type: "email",
+                message: "The input is not valid E-mail!",
+              },
+            ]}
+          >
             <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </Form.Item>
 
