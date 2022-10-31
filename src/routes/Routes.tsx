@@ -9,6 +9,7 @@ import HomePage from "../pages/HomePage";
 import BoardPage from "../pages/BoardPage";
 import AccountPage from "../pages/AccountPage";
 import CreateBoardPage from "../pages/CreateBoardPage";
+import TaskPage from "../pages/TaskPage";
 import Navbar from "../components/Navbar";
 
 export const MyRoutes: React.FC = () => {
@@ -22,6 +23,7 @@ export const MyRoutes: React.FC = () => {
         <Route path="boards/:id" element={<BoardPage />} />
         <Route path="new_board" element={<CreateBoardPage />} />
         <Route path="profile/:id" element={<AccountPage />} />
+        <Route path="tasks/:id" element={<TaskPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

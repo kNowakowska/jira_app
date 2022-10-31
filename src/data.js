@@ -16,9 +16,14 @@ export const user = {
 };
 
 export const initialTasks = {
-  "task-1": { id: "task-1", title: "Task 1 Title" },
-  "task-2": { id: "task-2", title: "Task 2 Title" },
-  "task-3": { id: "task-3", title: "Task 3 Title" },
+  "task-1": {
+    id: "task-1",
+    title: "Task 1 Title",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
+  },
+  "task-2": { id: "task-2", title: "Task 2 Title", description: "Lorem Ipsum is simply dummy text of the printing and" },
+  "task-3": { id: "task-3", title: "Task 3 Title", assignee: "John Smith" },
   "task-4": { id: "task-4", title: "Task 4 Title" },
   "task-5": { id: "task-5", title: "Task 5 Title" },
 };
