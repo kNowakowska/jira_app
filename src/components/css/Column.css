@@ -1,10 +1,7 @@
 .column-space {
-    display: "flex";
     width: 18%;
     background-color: #bae7ff;
     padding: 10px;
-    /* direction: column;
-    justify-content: flex-start; */
 }
 
 h3.column-title {

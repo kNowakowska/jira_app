@@ -19,8 +19,9 @@ export type TaskType = {
   title: string;
   description?: string;
   reporter?: number;
-  assignee?: number;
+  assignee?: number | string; // do zmiany na tylko number
   status?: number;
+  board?: string; //number, because of id
 };
 
 export type ColumnType = {

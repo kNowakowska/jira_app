@@ -1,5 +1,18 @@
-.task-card{ 
+.task-card {
     background-color: #e6f7ff;
-    margin-bottom: 10px
+    margin-bottom: 10px;
 
+}
+
+.ant-card-body {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    height: 60px;
+    width: 100%;
+    white-space: nowrap;
+
+}
+
+.task-assignee {
+    color: #40a9ff;
 }

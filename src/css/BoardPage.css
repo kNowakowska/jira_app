@@ -1,4 +1,4 @@
-.board-content{
+.board-content {
     background-color: #91d5ff;
     width: 90vw;
     min-height: 80vh;
@@ -6,9 +6,40 @@
     margin-left: auto;
     margin-right: auto;
     display: flex;
-    justify-content: space-around;
-    align-items: stretch; 
-    padding-top: 15px;
-    padding-bottom: 15px
+    align-items: stretch;
+    flex-direction: column;
+    padding: 15px;
+}
 
+.title-container {
+    justify-content: center;
+}
+
+.board-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.board-main {
+    width: 85%;
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+}
+
+.board-side-toolbar {
+    width: 10%;
+}
+
+
+.action-btn {
+    width: 100%;
+    margin-bottom: 15px
+}
+
+.edit-board-form {
+    width: 75%;
+    justify-content: flex-end;
+    flex-direction: column;
 }
