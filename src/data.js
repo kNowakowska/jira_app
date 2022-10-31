@@ -15,6 +15,14 @@ export const user = {
   ],
 };
 
+export const board = {
+  id: 1,
+  short: "D08",
+  name: "Board table 1",
+  owner: 1,
+  assigned_users: [],
+};
+
 export const initialTasks = {
   "task-1": {
     id: "task-1",
