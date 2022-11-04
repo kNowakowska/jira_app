@@ -1,5 +1,5 @@
+import { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import { useAppSelector } from "../redux/hooks";
 
 import Login from "../pages/LoginPage";
 import SignUp from "../pages/SignUpPage";
@@ -13,9 +13,24 @@ import TaskPage from "../pages/TaskPage";
 import Navbar from "../components/Navbar";
 
 export const MyRoutes: React.FC = () => {
-  const isLogged = useAppSelector((state) => state.system.isLogged);
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("user") ? true : false);
 
-  return isLogged ? (
+  useEffect(() => {
+    function checkUserData() {
+      if (localStorage.getItem("token")) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    }
+    window.addEventListener("storage", checkUserData);
+
+    return () => {
+      window.removeEventListener("storage", checkUserData);
+    };
+  }, []);
+
+  return isLoggedIn ? (
     <>
       <Navbar />
       <Routes>
