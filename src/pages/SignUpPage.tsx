@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 import { Layout, Button, Form, Input } from "antd";
 
+import { createUser } from "../api/users";
+
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,12 +16,17 @@ const SignUpPage: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const goHome = () => {
+    navigate("/");
+  };
+
   const signUp = () => {
-    navigate("/home");
+    const userData = { email, password, firstname: name, surname: lastName };
+    createUser(userData, goHome);
   };
 
   const cancelLogin = () => {
-    navigate("/");
+    goHome();
   };
 
   return (
@@ -89,7 +96,7 @@ const SignUpPage: React.FC = () => {
               Cancel
             </Button>
             <Button type="primary" htmlType="submit" size="large" className="btn-margin">
-              Sign In
+              Sign Up
             </Button>
           </Form.Item>
         </Form>

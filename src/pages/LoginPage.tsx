@@ -5,25 +5,37 @@ import { useNavigate } from "react-router-dom";
 
 import { Layout, Button, Form, Input } from "antd";
 
-import { useAppDispatch } from "../redux/hooks";
-import { logIn } from "../redux/systemSlice";
-
-import { user } from "../data";
+import { logIn } from "../api/system";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
-  const signIn = () => {
-    dispatch(logIn(user));
+  const goHome = () => {
     navigate("/");
   };
 
+  const loginFailed = (errorMsg: string) => {
+    setErrorMsg(errorMsg);
+  };
+
+  const signIn = () => {
+    const loginData = {
+      email: email,
+      password: password,
+    };
+    logIn(loginData, goHome, loginFailed);
+  };
+
   const cancelLogin = () => {
-    navigate("/");
+    goHome();
+  };
+
+  const onFieldsChange = () => {
+    setErrorMsg("");
   };
 
   return (
@@ -38,12 +50,24 @@ const LoginPage: React.FC = () => {
           onFinishFailed={() => null}
           autoComplete="off"
           className="login-form"
+          onFieldsChange={onFieldsChange}
         >
-          <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input your email!" }]}>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
+            validateStatus={errorMsg ? "error" : ""}
+          >
             <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </Form.Item>
 
-          <Form.Item label="Password" name="password" rules={[{ required: true, message: "Please input your password!" }]}>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+            validateStatus={errorMsg ? "error" : ""}
+            help={errorMsg || ""}
+          >
             <Input.Password className="login-input" value={password} onChange={(e) => setPassword(e.target.value)} />
           </Form.Item>
 

@@ -7,8 +7,8 @@ import type { DrawerProps } from "antd/es/drawer";
 import type { MenuProps } from "antd/es/menu";
 import { TableOutlined, UserOutlined, FormOutlined, LogoutOutlined, HomeOutlined } from "@ant-design/icons";
 
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { logOut } from "../redux/systemSlice";
+import { useAppSelector } from "../redux/hooks";
+import { logOut } from "../api/system";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -26,9 +26,11 @@ type CustomDrawerType = {
 };
 
 const CustomDrawer: React.FC<DrawerProps & CustomDrawerType> = ({ onClose, open }) => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const loggedUser = useAppSelector((state) => state.system.user);
+  const goHome = () => {
+    navigate("/");
+  };
 
   const items: MenuItem[] = [
     getItem(<Link to="/">Home</Link>, "home", <HomeOutlined />),
@@ -45,8 +47,9 @@ const CustomDrawer: React.FC<DrawerProps & CustomDrawerType> = ({ onClose, open 
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
     if (key === "log_out") {
-      dispatch(logOut());
-      navigate("/");
+      //toString() do usunięcia po poprawie typu id
+      //przetestować bo na razie nie ma identifier
+      logOut(loggedUser?.id.toString(), goHome);
     } else {
       onClose?.();
     }
