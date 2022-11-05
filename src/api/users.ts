@@ -8,7 +8,7 @@ type UserRequestDataType = {
   email: string;
   firstname: string;
   surname: string;
-  password: string;
+  password?: string;
   identifier?: string;
 };
 
@@ -61,7 +61,11 @@ export const createUser = (userData: UserRequestDataType, successCallback: () =>
     });
 };
 
-export const updateUser = (userData: UserRequestDataType, successCallback: (user: UserResponseType) => void) => {
+export const updateUser = (
+  userData: UserRequestDataType,
+  successCallback: (user: UserResponseType) => void,
+  errorCallback: () => void
+) => {
   axiosInstance
     .put<UserResponseType>(`/users/${userData.identifier}`, userData)
     .then((response) => {
@@ -71,10 +75,11 @@ export const updateUser = (userData: UserRequestDataType, successCallback: (user
     .catch((err) => {
       console.error(err.message);
       error("Couldn't update user", err.response.data.message);
+      errorCallback();
     });
 };
 
-export const deleteUser = (userId: string, successCallback: () => void) => {
+export const deleteUser = (userId: string | undefined, successCallback: () => void) => {
   axiosInstance
     .delete<UserResponseType>(`/users/${userId}`)
     .then(() => {

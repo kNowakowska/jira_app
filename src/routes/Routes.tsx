@@ -16,6 +16,7 @@ export const MyRoutes: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("user") ? true : false);
 
   useEffect(() => {
+    //TODO: dodac pobieranie danych o użytkowniku i przetestować odświeżanie strony
     function checkUserData() {
       if (localStorage.getItem("token")) {
         setIsLoggedIn(true);
