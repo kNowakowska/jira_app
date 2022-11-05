@@ -7,7 +7,7 @@ export type BoardType = {
 };
 
 export type UserType = {
-  id: number;
+  identifier: string;
   name: string;
   last_name: string;
   email: string;

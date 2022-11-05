@@ -1,16 +1,15 @@
 import "../css/AccountPage.css";
 
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { useState } from "react";
+import { useAppSelector } from "../redux/hooks";
 import { useNavigate } from "react-router-dom";
 
 import { Layout, Button, Form, Input, Col, Row } from "antd";
 
 import ConfirmModal from "../components/ConfirmModal";
-import { logOut } from "../redux/systemSlice";
+import { deleteUser, updateUser } from "../api/users";
 
 const AccountPage: React.FC = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const loggedUser = useAppSelector((state) => state.system.user);
@@ -20,18 +19,29 @@ const AccountPage: React.FC = () => {
 
   const [form] = Form.useForm<{ name: string; lastName: string; email: string; password: string; repeatPassword: string }>();
   const nameValue = Form.useWatch("name", form);
-
-  useEffect(() => {
-    console.log(nameValue);
-  }, [nameValue]);
+  const lastNameValue = Form.useWatch("lastName", form);
+  const emailValue = Form.useWatch("email", form);
+  const passwordValue = Form.useWatch("password", form);
+  const repeatedPasswordValue = Form.useWatch("repeatPassword", form);
 
   const saveUser = () => {
-    form.submit();
+    const userData = {
+      identifier: loggedUser?.identifier,
+      firstname: nameValue,
+      surname: lastNameValue,
+      email: emailValue,
+    };
+    if (passwordValue) userData["password" as keyof typeof userData] = passwordValue;
+    //TODO: przetestować bo brak identifier i danych użytkownika
+    updateUser(userData, closeEditMode, cancelSave);
+  };
+
+  const closeEditMode = () => {
     setEditMode(false);
   };
 
   const cancelSave = () => {
-    setEditMode(false);
+    closeEditMode();
     form.resetFields();
   };
 
@@ -43,14 +53,24 @@ const AccountPage: React.FC = () => {
     setConfirmModalOpen(true);
   };
 
-  const deleteUser = () => {
-    dispatch(logOut());
+  const goHome = () => {
     navigate("/");
+  };
+
+  const handleDeleteUser = () => {
+    //TODO: przetestowac bo brak identifier'a
+    deleteUser(loggedUser?.identifier, goHome);
   };
 
   const cancelDeleteUser = () => {
     setConfirmModalOpen(false);
   };
+
+  const isModified =
+    nameValue !== loggedUser?.name ||
+    lastNameValue !== loggedUser?.last_name ||
+    emailValue !== loggedUser?.email ||
+    (passwordValue && passwordValue === repeatedPasswordValue);
 
   return (
     <Layout>
@@ -137,7 +157,14 @@ const AccountPage: React.FC = () => {
                 </Button>
               </Col>
               <Col span={12}>
-                <Button type="primary" htmlType="submit" size="large" className="btn-margin" onClick={saveUser}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  size="large"
+                  className="btn-margin"
+                  onClick={saveUser}
+                  disabled={!isModified}
+                >
                   Save
                 </Button>
               </Col>
@@ -159,7 +186,7 @@ const AccountPage: React.FC = () => {
         </Form>
         <ConfirmModal
           open={confirmModalOpen}
-          onOk={deleteUser}
+          onOk={handleDeleteUser}
           onCancel={cancelDeleteUser}
           title="Delete user"
           description="This action is permament. Are you sure you want to delete your account?"

@@ -41,15 +41,14 @@ const CustomDrawer: React.FC<DrawerProps & CustomDrawerType> = ({ onClose, open 
       loggedUser?.boards?.map((board) => getItem(<Link to={`/boards/${board.short}`}>{board.name}</Link>, board.short))
     ),
     getItem(<Link to="/new_board">Create new board</Link>, "create_board", <FormOutlined />),
-    getItem(<Link to={`/profile/${loggedUser?.id}`}>My account</Link>, "profile", <UserOutlined />),
+    getItem(<Link to={`/profile/${loggedUser?.identifier}`}>My account</Link>, "profile", <UserOutlined />),
     getItem("Log out", "log_out", <LogoutOutlined />),
   ];
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
     if (key === "log_out") {
-      //toString() do usunięcia po poprawie typu id
-      //przetestować bo na razie nie ma identifier
-      logOut(loggedUser?.id.toString(), goHome);
+      //TODO: przetestować bo na razie nie ma identifier
+      logOut(loggedUser?.identifier, goHome);
     } else {
       onClose?.();
     }
