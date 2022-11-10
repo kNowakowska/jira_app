@@ -1,8 +1,11 @@
 import axiosInstance from "../axios";
+
 import error from "../components/ErrorDialog";
 import success from "../components/SuccessDialog";
+
 import { store } from "../redux/store";
 import { logIn, logOut } from "../redux/systemSlice";
+import { clearBoards } from "../redux/boardsSlice";
 import { UserType } from "../types";
 
 type UserRequestDataType = {
@@ -11,10 +14,6 @@ type UserRequestDataType = {
   surname: string;
   password?: string;
   identifier?: string;
-};
-
-type UserCollectionResponseType = {
-  data: UserType[];
 };
 
 export const getUser = (userId: string | null, successCallback: (user: UserType) => void = () => null) => {
@@ -31,9 +30,9 @@ export const getUser = (userId: string | null, successCallback: (user: UserType)
 
 export const getUsers = () => {
   axiosInstance
-    .get<UserCollectionResponseType>(`/users`)
+    .get<UserType[]>(`/users`)
     .then(() => {
-      //zapis do reduxa ?
+      //TODO: successCallback
     })
     .catch((err) => {
       console.error(err.message);
@@ -81,7 +80,9 @@ export const deleteUser = (userId: string | undefined, successCallback: () => vo
       localStorage.clear();
       window.dispatchEvent(new Event("storage"));
       store.dispatch(logOut());
+      store.dispatch(clearBoards());
       successCallback();
+      success("User deletion", "User deleted successfully.");
     })
     .catch((err) => {
       console.error(err.message);

@@ -15,6 +15,7 @@ import Navbar from "../components/Navbar";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { logIn } from "../redux/systemSlice";
 import { getUser } from "../api/users";
+import { getBoards } from "../api/boards";
 
 export const MyRoutes: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("token") ? true : false);
@@ -27,6 +28,7 @@ export const MyRoutes: React.FC = () => {
       getUser(localStorage.getItem("userId"), (user) => {
         dispatch(logIn(user));
       });
+      getBoards();
     }
     function checkUserData() {
       if (localStorage.getItem("token")) {

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Layout, Input, Button, Form, Space, Typography, Col, Row } from "antd";
 import ConfirmModal from "../components/ConfirmModal";
+import { createBoard } from "../api/boards";
 
 const { Title } = Typography;
 const CreateBoardPage = () => {
@@ -28,9 +29,16 @@ const CreateBoardPage = () => {
     setConfirmModalOpen(true);
   };
 
-  const createBoard = () => {
-    form.submit();
-    navigate(`/boards/${shortcutValue}`);
+  const goToBoard = (boardId: string) => {
+    navigate(`/boards/${boardId}`);
+  };
+
+  const addBoard = () => {
+    const boardData = {
+      shortcut: shortcutValue,
+      name: nameValue,
+    };
+    createBoard(boardData, goToBoard);
   };
 
   return (
@@ -85,7 +93,7 @@ const CreateBoardPage = () => {
                 className="btn-margin"
                 type="primary"
                 htmlType="submit"
-                onClick={createBoard}
+                onClick={addBoard}
                 disabled={!shortcutValue || !nameValue}
               >
                 Create

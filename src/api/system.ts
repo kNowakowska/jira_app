@@ -1,8 +1,12 @@
 import axiosInstance from "../axios";
 import { store } from "../redux/store";
-import { logIn as logInAction, logOut as logOutAction } from "../redux/systemSlice";
+
 import error from "../components/ErrorDialog";
+
+import { logIn as logInAction, logOut as logOutAction } from "../redux/systemSlice";
+import { clearBoards } from "../redux/boardsSlice";
 import { getUser } from "./users";
+import { getBoards } from "./boards";
 
 type LoginDataType = {
   email: string;
@@ -28,6 +32,7 @@ export const logIn = (loginData: LoginDataType, successCallback: () => void, err
       getUser(response.data.userIdentifier, (user) => {
         store.dispatch(logInAction(user));
       });
+      getBoards();
       successCallback();
     })
     .catch((err) => {
@@ -44,8 +49,8 @@ export const logOut = (userId: string | undefined, successCallback: () => void) 
     .then(() => {
       localStorage.clear();
       window.dispatchEvent(new Event("storage"));
-      //get user basing on id and save it in store
       store.dispatch(logOutAction());
+      store.dispatch(clearBoards());
       successCallback();
     })
     .catch((err) => {

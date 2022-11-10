@@ -12,12 +12,19 @@ import { logOut } from "../api/system";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-function getItem(label: React.ReactNode, key?: React.Key | null, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
+function getItem(
+  label: React.ReactNode,
+  key?: React.Key | null,
+  icon?: React.ReactNode,
+  children?: MenuItem[],
+  type?: "group"
+): MenuItem {
   return {
     key,
     icon,
     children,
     label,
+    type,
   } as MenuItem;
 }
 
@@ -28,18 +35,31 @@ type CustomDrawerType = {
 const CustomDrawer: React.FC<DrawerProps & CustomDrawerType> = ({ onClose, open }) => {
   const navigate = useNavigate();
   const loggedUser = useAppSelector((state) => state.system.user);
+  const contributed = useAppSelector((state) => state.boards.contributed);
+  const owned = useAppSelector((state) => state.boards.owned);
+
   const goHome = () => {
     navigate("/");
   };
 
   const items: MenuItem[] = [
     getItem(<Link to="/">Home</Link>, "home", <HomeOutlined />),
-    getItem(
-      "Your boards",
-      "boards",
-      <TableOutlined />,
-      loggedUser?.boards?.map((board) => getItem(<Link to={`/boards/${board.short}`}>{board.name}</Link>, board.short))
-    ),
+    getItem("Your boards", "boards", <TableOutlined />, [
+      getItem(
+        "Contributed",
+        "g1",
+        null,
+        contributed?.map((board) => getItem(<Link to={`/boards/${board.identifier}`}>{board.name}</Link>, board.identifier)),
+        "group"
+      ),
+      getItem(
+        "Owned",
+        "g2",
+        null,
+        owned?.map((board) => getItem(<Link to={`/boards/${board.identifier}`}>{board.name}</Link>, board.identifier)),
+        "group"
+      ),
+    ]),
     getItem(<Link to="/new_board">Create new board</Link>, "create_board", <FormOutlined />),
     getItem(<Link to={`/profile/${loggedUser?.identifier}`}>My account</Link>, "profile", <UserOutlined />),
     getItem("Log out", "log_out", <LogoutOutlined />),
@@ -47,7 +67,6 @@ const CustomDrawer: React.FC<DrawerProps & CustomDrawerType> = ({ onClose, open 
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
     if (key === "log_out") {
-      //TODO: przetestować bo na razie nie ma identifier
       logOut(loggedUser?.identifier, goHome);
     } else {
       onClose?.();

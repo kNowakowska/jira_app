@@ -1,7 +1,7 @@
 export const user = {
   identifier: "1",
-  name: "Jane",
-  last_name: "Smith",
+  firstname: "Jane",
+  surname: "Smith",
   email: "jane@com.pl",
   password: "password",
   boards: [
@@ -16,11 +16,11 @@ export const user = {
 };
 
 export const board = {
-  id: 1,
-  short: "D08",
+  identifier: "1",
+  shortcut: "D08",
   name: "Board table 1",
-  owner: 1,
-  assigned_users: [],
+  owner: { identifier: "1", firstname: "Jane", surname: "Smith", email: "jane@com.pl" },
+  assigned_users: [{ identifier: "1", firstname: "Jane", surname: "Smith", email: "jane@com.pl" }],
 };
 
 export const initialTasks = {
