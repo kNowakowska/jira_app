@@ -1,8 +1,12 @@
 import axiosInstance from "../axios";
+
 import error from "../components/ErrorDialog";
 import success from "../components/SuccessDialog";
+
 import { store } from "../redux/store";
-import { systemSlice } from "../redux/systemSlice";
+import { logIn, logOut } from "../redux/systemSlice";
+import { clearBoards } from "../redux/boardsSlice";
+import { UserType } from "../types";
 
 type UserRequestDataType = {
   email: string;
@@ -12,20 +16,9 @@ type UserRequestDataType = {
   identifier?: string;
 };
 
-type UserResponseType = {
-  identifier: string;
-  email: string;
-  firstname: string;
-  surname: string;
-};
-
-type UserCollectionResponseType = {
-  data: UserResponseType[];
-};
-
-export const getUser = (userId: string, successCallback: (user: UserResponseType) => void) => {
+export const getUser = (userId: string | null, successCallback: (user: UserType) => void = () => null) => {
   axiosInstance
-    .get<UserResponseType>(`/users/${userId}`)
+    .get<UserType>(`/users/${userId}`)
     .then((response) => {
       successCallback(response.data);
     })
@@ -37,9 +30,9 @@ export const getUser = (userId: string, successCallback: (user: UserResponseType
 
 export const getUsers = () => {
   axiosInstance
-    .get<UserCollectionResponseType>(`/users`)
+    .get<UserType[]>(`/users`)
     .then(() => {
-      //zapis do reduxa ?
+      //TODO: successCallback
     })
     .catch((err) => {
       console.error(err.message);
@@ -49,10 +42,10 @@ export const getUsers = () => {
 
 export const createUser = (userData: UserRequestDataType, successCallback: () => void) => {
   axiosInstance
-    .post<UserResponseType>(`/users`, userData)
+    .post<UserType>(`/users`, userData)
     .then(() => {
       //without automatic login
-      success("Registration succees", "Your registration succeeded. Log in to continue.");
+      success("Registration success", "Your registration succeeded. Log in to continue.");
       successCallback();
     })
     .catch((err) => {
@@ -63,14 +56,15 @@ export const createUser = (userData: UserRequestDataType, successCallback: () =>
 
 export const updateUser = (
   userData: UserRequestDataType,
-  successCallback: (user: UserResponseType) => void,
+  successCallback: (user: UserType) => void,
   errorCallback: () => void
 ) => {
   axiosInstance
-    .put<UserResponseType>(`/users/${userData.identifier}`, userData)
+    .patch<UserType>(`/users/${userData.identifier}`, userData)
     .then((response) => {
+      store.dispatch(logIn(response.data));
       successCallback(response.data);
-      //jeśli zapis userów do reduxa to tutaj update
+      success("User update success", "Your changed your data successfully.");
     })
     .catch((err) => {
       console.error(err.message);
@@ -81,11 +75,14 @@ export const updateUser = (
 
 export const deleteUser = (userId: string | undefined, successCallback: () => void) => {
   axiosInstance
-    .delete<UserResponseType>(`/users/${userId}`)
+    .delete<UserType>(`/users/${userId}`)
     .then(() => {
       localStorage.clear();
-      store.dispatch(systemSlice.actions.logOut());
+      window.dispatchEvent(new Event("storage"));
+      store.dispatch(logOut());
+      store.dispatch(clearBoards());
       successCallback();
+      success("User deletion", "User deleted successfully.");
     })
     .catch((err) => {
       console.error(err.message);

@@ -1,17 +1,16 @@
 export type BoardType = {
-  id: number;
-  short: string;
+  identifier?: string;
+  shortcut: string;
   name: string;
-  owner: number;
-  assigned_users: number[] | [];
+  owner?: UserType;
+  contributors?: UserType[] | [];
 };
 
 export type UserType = {
   identifier: string;
-  name: string;
-  last_name: string;
+  firstname: string;
+  surname: string;
   email: string;
-  boards: BoardType[] | [];
 };
 
 export type TaskType = {
