@@ -2,7 +2,7 @@ import axiosInstance from "../axios";
 import error from "../components/ErrorDialog";
 import success from "../components/SuccessDialog";
 import { store } from "../redux/store";
-import { systemSlice } from "../redux/systemSlice";
+import { logIn, logOut } from "../redux/systemSlice";
 import { UserType } from "../types";
 
 type UserRequestDataType = {
@@ -46,7 +46,7 @@ export const createUser = (userData: UserRequestDataType, successCallback: () =>
     .post<UserType>(`/users`, userData)
     .then(() => {
       //without automatic login
-      success("Registration succees", "Your registration succeeded. Log in to continue.");
+      success("Registration success", "Your registration succeeded. Log in to continue.");
       successCallback();
     })
     .catch((err) => {
@@ -61,10 +61,11 @@ export const updateUser = (
   errorCallback: () => void
 ) => {
   axiosInstance
-    .put<UserType>(`/users/${userData.identifier}`, userData)
+    .patch<UserType>(`/users/${userData.identifier}`, userData)
     .then((response) => {
+      store.dispatch(logIn(response.data));
       successCallback(response.data);
-      //jeśli zapis userów do reduxa to tutaj update
+      success("User update success", "Your changed your data successfully.");
     })
     .catch((err) => {
       console.error(err.message);
@@ -78,7 +79,8 @@ export const deleteUser = (userId: string | undefined, successCallback: () => vo
     .delete<UserType>(`/users/${userId}`)
     .then(() => {
       localStorage.clear();
-      store.dispatch(systemSlice.actions.logOut());
+      window.dispatchEvent(new Event("storage"));
+      store.dispatch(logOut());
       successCallback();
     })
     .catch((err) => {

@@ -1,6 +1,6 @@
 import axiosInstance from "../axios";
 import { store } from "../redux/store";
-import { systemSlice } from "../redux/systemSlice";
+import { logIn as logInAction, logOut as logOutAction } from "../redux/systemSlice";
 import error from "../components/ErrorDialog";
 import { getUser } from "./users";
 
@@ -26,7 +26,7 @@ export const logIn = (loginData: LoginDataType, successCallback: () => void, err
       localStorage.setItem("userId", response.data.userIdentifier);
       window.dispatchEvent(new Event("storage"));
       getUser(response.data.userIdentifier, (user) => {
-        store.dispatch(systemSlice.actions.logIn(user));
+        store.dispatch(logInAction(user));
       });
       successCallback();
     })
@@ -45,7 +45,7 @@ export const logOut = (userId: string | undefined, successCallback: () => void) 
       localStorage.clear();
       window.dispatchEvent(new Event("storage"));
       //get user basing on id and save it in store
-      store.dispatch(systemSlice.actions.logOut());
+      store.dispatch(logOutAction());
       successCallback();
     })
     .catch((err) => {
