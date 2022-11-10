@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:8080/",
@@ -6,8 +6,13 @@ const axiosInstance = axios.create({
   headers: { "Content-Type": "application/json", Accept: "*/*" },
 });
 
-if (localStorage.getItem("token")) {
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
-}
+axiosInstance.interceptors.request.use((config: AxiosRequestConfig) => {
+  if (!config?.headers || !localStorage.getItem("token")) {
+    return config;
+  } else {
+    config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+  }
+  return config;
+});
 
 export default axiosInstance;

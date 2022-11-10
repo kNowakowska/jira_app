@@ -1,6 +1,6 @@
 import "../css/AccountPage.css";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "../redux/hooks";
 import { useNavigate } from "react-router-dom";
 
@@ -23,6 +23,10 @@ const AccountPage: React.FC = () => {
   const emailValue = Form.useWatch("email", form);
   const passwordValue = Form.useWatch("password", form);
   const repeatedPasswordValue = Form.useWatch("repeatPassword", form);
+
+  useEffect(() => {
+    form.resetFields();
+  }, [loggedUser]);
 
   const saveUser = () => {
     const userData = {
@@ -67,8 +71,8 @@ const AccountPage: React.FC = () => {
   };
 
   const isModified =
-    nameValue !== loggedUser?.name ||
-    lastNameValue !== loggedUser?.last_name ||
+    nameValue !== loggedUser?.firstname ||
+    lastNameValue !== loggedUser?.surname ||
     emailValue !== loggedUser?.email ||
     (passwordValue && passwordValue === repeatedPasswordValue);
 
@@ -89,7 +93,7 @@ const AccountPage: React.FC = () => {
               <Form.Item
                 label="Name"
                 name="name"
-                initialValue={loggedUser?.name}
+                initialValue={loggedUser?.firstname}
                 rules={[{ required: true, message: "Please input your name!" }]}
               >
                 <Input className="login-input" disabled={!editMode} />
@@ -99,7 +103,7 @@ const AccountPage: React.FC = () => {
               <Form.Item
                 label="Last name"
                 name="lastName"
-                initialValue={loggedUser?.last_name}
+                initialValue={loggedUser?.surname}
                 rules={[{ required: true, message: "Please input your last name!" }]}
               >
                 <Input className="login-input" disabled={!editMode} />

@@ -8,10 +8,10 @@ export type BoardType = {
 
 export type UserType = {
   identifier: string;
-  name: string;
-  last_name: string;
+  firstname: string;
+  surname: string;
   email: string;
-  boards: BoardType[] | [];
+  boards?: BoardType[] | [];
 };
 
 export type TaskType = {

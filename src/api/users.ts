@@ -3,6 +3,7 @@ import error from "../components/ErrorDialog";
 import success from "../components/SuccessDialog";
 import { store } from "../redux/store";
 import { systemSlice } from "../redux/systemSlice";
+import { UserType } from "../types";
 
 type UserRequestDataType = {
   email: string;
@@ -12,20 +13,13 @@ type UserRequestDataType = {
   identifier?: string;
 };
 
-type UserResponseType = {
-  identifier: string;
-  email: string;
-  firstname: string;
-  surname: string;
-};
-
 type UserCollectionResponseType = {
-  data: UserResponseType[];
+  data: UserType[];
 };
 
-export const getUser = (userId: string, successCallback: (user: UserResponseType) => void) => {
+export const getUser = (userId: string | null, successCallback: (user: UserType) => void = () => null) => {
   axiosInstance
-    .get<UserResponseType>(`/users/${userId}`)
+    .get<UserType>(`/users/${userId}`)
     .then((response) => {
       successCallback(response.data);
     })
@@ -49,7 +43,7 @@ export const getUsers = () => {
 
 export const createUser = (userData: UserRequestDataType, successCallback: () => void) => {
   axiosInstance
-    .post<UserResponseType>(`/users`, userData)
+    .post<UserType>(`/users`, userData)
     .then(() => {
       //without automatic login
       success("Registration succees", "Your registration succeeded. Log in to continue.");
@@ -63,11 +57,11 @@ export const createUser = (userData: UserRequestDataType, successCallback: () =>
 
 export const updateUser = (
   userData: UserRequestDataType,
-  successCallback: (user: UserResponseType) => void,
+  successCallback: (user: UserType) => void,
   errorCallback: () => void
 ) => {
   axiosInstance
-    .put<UserResponseType>(`/users/${userData.identifier}`, userData)
+    .put<UserType>(`/users/${userData.identifier}`, userData)
     .then((response) => {
       successCallback(response.data);
       //jeśli zapis userów do reduxa to tutaj update
@@ -81,7 +75,7 @@ export const updateUser = (
 
 export const deleteUser = (userId: string | undefined, successCallback: () => void) => {
   axiosInstance
-    .delete<UserResponseType>(`/users/${userId}`)
+    .delete<UserType>(`/users/${userId}`)
     .then(() => {
       localStorage.clear();
       store.dispatch(systemSlice.actions.logOut());

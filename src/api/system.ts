@@ -1,8 +1,8 @@
 import axiosInstance from "../axios";
-import { user } from "../data";
 import { store } from "../redux/store";
 import { systemSlice } from "../redux/systemSlice";
 import error from "../components/ErrorDialog";
+import { getUser } from "./users";
 
 type LoginDataType = {
   email: string;
@@ -11,7 +11,7 @@ type LoginDataType = {
 
 type LoginResponseType = {
   accessToken: string;
-  identifier?: string;
+  userIdentifier: string;
 };
 
 type LogoutDataType = {
@@ -23,10 +23,11 @@ export const logIn = (loginData: LoginDataType, successCallback: () => void, err
     .post<LoginResponseType>("/auth/login", loginData)
     .then((response) => {
       localStorage.setItem("token", response.data.accessToken);
-      if (response.data.identifier) localStorage.setItem("userId", response.data.identifier);
+      localStorage.setItem("userId", response.data.userIdentifier);
       window.dispatchEvent(new Event("storage"));
-      //get user basing on id and save it in store
-      store.dispatch(systemSlice.actions.logIn(user));
+      getUser(response.data.userIdentifier, (user) => {
+        store.dispatch(systemSlice.actions.logIn(user));
+      });
       successCallback();
     })
     .catch((err) => {

@@ -12,11 +12,22 @@ import CreateBoardPage from "../pages/CreateBoardPage";
 import TaskPage from "../pages/TaskPage";
 import Navbar from "../components/Navbar";
 
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { logIn } from "../redux/systemSlice";
+import { getUser } from "../api/users";
+
 export const MyRoutes: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("user") ? true : false);
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("token") ? true : false);
+  const loggedUser = useAppSelector((state) => state.system.user);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    //TODO: dodac pobieranie danych o użytkowniku i przetestować odświeżanie strony
+    if (!loggedUser && localStorage.getItem("userId")) {
+      getUser(localStorage.getItem("userId"), (user) => {
+        dispatch(logIn(user));
+      });
+    }
     function checkUserData() {
       if (localStorage.getItem("token")) {
         setIsLoggedIn(true);
