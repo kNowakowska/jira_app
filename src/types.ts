@@ -1,6 +1,6 @@
 export type BoardType = {
   identifier?: string;
-  shortcut: string;
+  shortcut?: string;
   name: string;
   owner?: UserType;
   contributors?: UserType[] | [];

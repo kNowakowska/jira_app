@@ -5,9 +5,9 @@ import error from "../components/ErrorDialog";
 import success from "../components/SuccessDialog";
 
 import { BoardType } from "../types";
-import { receiveAllBoards } from "../redux/boardsSlice";
+import { receiveAllBoards, removeBoard, addBoard, editBoard } from "../redux/boardsSlice";
 
-export const getBoard = (boardId: string | null, successCallback: (board: BoardType) => void = () => null) => {
+export const getBoard = (boardId: string | undefined, successCallback: (board: BoardType) => void = () => null) => {
   axiosInstance
     .get<BoardType>(`/boards/${boardId}`)
     .then((response) => {
@@ -41,8 +41,9 @@ export const createBoard = (boardData: BoardType, successCallback: (boardId: str
   axiosInstance
     .post<BoardType>(`/boards`, boardData)
     .then((response) => {
+      store.dispatch(addBoard(response.data));
+      if (response.data.identifier) successCallback(response.data.identifier);
       success("Board creation success", "New board created successfully.");
-      if (response.data.identifier) successCallback(response.data.identifier); //TODO: opening board by default
     })
     .catch((err) => {
       console.error(err.message);
@@ -50,17 +51,17 @@ export const createBoard = (boardData: BoardType, successCallback: (boardId: str
     });
 };
 
-export const updateBoard = (boardData: BoardType, successCallback: (user: BoardType) => void, errorCallback: () => void) => {
+export const updateBoard = (boardData: BoardType, successCallback: () => void) => {
   axiosInstance
     .patch<BoardType>(`/boards/${boardData.identifier}`, boardData)
     .then((response) => {
-      successCallback(response.data);
+      store.dispatch(editBoard(response.data));
+      successCallback();
       success("Board update success", "Your changed board data successfully.");
     })
     .catch((err) => {
       console.error(err.message);
       error("Couldn't update board", err.response.data.message);
-      errorCallback();
     });
 };
 
@@ -68,7 +69,9 @@ export const deleteBoard = (boardId: string | undefined, successCallback: () => 
   axiosInstance
     .delete<BoardType>(`/boards/${boardId}`)
     .then(() => {
+      store.dispatch(removeBoard(boardId));
       successCallback();
+      success("Board deletion", "Board deleted successfully.");
     })
     .catch((err) => {
       console.error(err.message);

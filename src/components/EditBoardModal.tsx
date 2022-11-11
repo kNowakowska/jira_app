@@ -13,6 +13,7 @@ const EditBoardModal = ({ open, onOk, onCancel, boardName }: EditBoardModalProps
 
   const editBoard = () => {
     onOk(nameValue);
+    form.resetFields();
   };
 
   return (

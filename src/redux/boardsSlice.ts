@@ -33,10 +33,20 @@ export const boardSlice = createSlice({
       state.contributed = [];
       state.owned = [];
     },
+    removeBoard: (state, action) => {
+      state.owned = state.owned?.filter((board) => board.identifier !== action.payload);
+    },
+    addBoard: (state, action) => {
+      state.owned = [...(state.owned || []), action.payload];
+    },
+    editBoard: (state, action) => {
+      state.owned = state.owned?.map((board) => (board.identifier !== action.payload.boardId ? board : action.payload));
+    },
   },
 });
 
-export const { receiveContributedBoards, receiveOwnedBoards, receiveAllBoards, clearBoards } = boardSlice.actions;
+export const { receiveContributedBoards, receiveOwnedBoards, receiveAllBoards, clearBoards, removeBoard, addBoard, editBoard } =
+  boardSlice.actions;
 
 export const getContributed = (state: RootState) => state.boards.contributed;
 export const getOwned = (state: RootState) => state.boards.owned;

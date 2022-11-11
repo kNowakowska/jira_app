@@ -6,12 +6,13 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { Layout, Button, Space, Typography } from "antd";
 
-import { initialTasks, initialColumns, columnOrder, board as initialBoard } from "../data";
+import { initialTasks, initialColumns, columnOrder } from "../data";
 import Column from "../components/Column";
 import ConfirmModal from "../components/ConfirmModal";
 import EditBoardModal from "../components/EditBoardModal";
 import AssignedUsersModal from "../components/AssignedUsersModal";
 import { BoardType } from "../types";
+import { getBoard, updateBoard, deleteBoard } from "../api/boards";
 
 const { Title } = Typography;
 
@@ -26,7 +27,7 @@ const BoardPage: React.FC = () => {
   const [usersModalOpen, setUsersModalOpen] = useState(false);
 
   useEffect(() => {
-    setBoard(initialBoard);
+    getBoard(id, setBoard);
   }, [id]);
 
   const onDragEnd = (result: DropResult) => {
@@ -78,17 +79,26 @@ const BoardPage: React.FC = () => {
     setEditBoard(false);
   };
 
-  const updateBoard = (newBoardName: string) => {
-    console.log(newBoardName);
-    setEditBoard(false);
+  const editBoardHandler = (newBoardName: string) => {
+    const newBoardData = {
+      name: newBoardName,
+      shortcut: board?.shortcut,
+      identifier: board?.identifier,
+    };
+    //TODO: przetestować, brak endpointu
+    updateBoard(newBoardData, () => {
+      setEditBoard(false);
+    });
   };
 
   const openConfirmationModal = () => {
     setConfirmModalOpen(true);
   };
 
-  const deleteBoard = () => {
-    navigate("/");
+  const removeBoard = () => {
+    deleteBoard(board?.identifier, () => {
+      navigate("/");
+    });
   };
 
   const cancelDeleteBoard = () => {
@@ -102,6 +112,8 @@ const BoardPage: React.FC = () => {
   const closeUsersModal = () => {
     setUsersModalOpen(false);
   };
+
+  const isOwner = localStorage.getItem("userId") === board?.owner?.identifier;
 
   return (
     <Layout>
@@ -123,12 +135,16 @@ const BoardPage: React.FC = () => {
             </DragDropContext>
           </div>
           <div className="board-side-toolbar">
-            <Button type="primary" size="large" onClick={openEditBoardModal} className="action-btn">
-              Edit board
-            </Button>
-            <Button size="large" onClick={openConfirmationModal} className="action-btn">
-              Delete board
-            </Button>
+            {isOwner && (
+              <Button type="primary" size="large" onClick={openEditBoardModal} className="action-btn">
+                Edit board
+              </Button>
+            )}
+            {isOwner && (
+              <Button size="large" onClick={openConfirmationModal} className="action-btn">
+                Delete board
+              </Button>
+            )}
             <Button type="primary" size="large" onClick={openUsersModal} className="action-btn">
               Assigned users
             </Button>
@@ -137,12 +153,12 @@ const BoardPage: React.FC = () => {
       </Layout.Content>
       <ConfirmModal
         open={confirmModalOpen}
-        onOk={deleteBoard}
+        onOk={removeBoard}
         onCancel={cancelDeleteBoard}
         title="Delete board"
         description="This action is permament. Are you sure you want to delete this board?"
       />
-      <EditBoardModal open={editBoard} onOk={updateBoard} onCancel={closeEditBoardModal} boardName={board?.name || ""} />
+      <EditBoardModal open={editBoard} onOk={editBoardHandler} onCancel={closeEditBoardModal} boardName={board?.name || ""} />
       <AssignedUsersModal open={usersModalOpen} onOk={closeUsersModal} onClose={closeUsersModal} />
     </Layout>
   );
