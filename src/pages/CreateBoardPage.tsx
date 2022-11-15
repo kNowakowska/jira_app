@@ -46,7 +46,7 @@ const CreateBoardPage = () => {
       <Layout.Content className="create-board-content">
         <Space>
           <Title level={3} className="page-title">
-            Create new table
+            Create new board
           </Title>
         </Space>
         <Form

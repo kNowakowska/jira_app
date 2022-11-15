@@ -53,7 +53,7 @@ export const createBoard = (boardData: BoardType, successCallback: (boardId: str
 
 export const updateBoard = (boardData: BoardType, successCallback: () => void) => {
   axiosInstance
-    .patch<BoardType>(`/boards/${boardData.identifier}`, boardData)
+    .put<BoardType>(`/boards/${boardData.identifier}`, boardData)
     .then((response) => {
       store.dispatch(editBoard(response.data));
       successCallback();

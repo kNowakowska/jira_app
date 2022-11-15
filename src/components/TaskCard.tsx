@@ -15,18 +15,18 @@ type TaskPropsType = {
 
 const TaskCard: React.FC<TaskPropsType> = ({ task, index }: TaskPropsType) => {
   const assigneeComponent = () => {
-    return <span className="task-assignee">{task.assignee || ""}</span>;
+    return <span className="task-assignee">{`${task.assignedUser.firstname} ${task.assignedUser.surname}` || ""}</span>;
   };
 
   const cardTitle = () => {
     return (
       <Tooltip title="Open task" placement="bottom">
-        <Link to={`/tasks/${task.id}`}>{task.title}</Link>
+        <Link to={`/tasks/${task.identifier}`}>{task.title}</Link>
       </Tooltip>
     );
   };
   return (
-    <Draggable draggableId={task.id} index={index}>
+    <Draggable draggableId={task.identifier} index={index}>
       {(provided) => (
         <Card
           ref={provided.innerRef}

@@ -8,7 +8,6 @@ import { Layout, Space, Typography, Input, Button, Form } from "antd";
 
 import { TaskType } from "../types";
 import ConfirmModal from "../components/ConfirmModal";
-import { initialTasks } from "../data";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -25,7 +24,8 @@ const TaskPage = () => {
   const [taskExtraForm] = Form.useForm<{ assignee: string }>();
 
   useEffect(() => {
-    setTask(id && id in initialTasks ? initialTasks[id as keyof typeof initialTasks] : null);
+    //TODO: pobieranie taska
+    setTask(null);
   }, [id]);
 
   useEffect(() => {
@@ -110,11 +110,15 @@ const TaskPage = () => {
                 label="Task number"
                 name="number"
                 rules={[{ required: true, message: "Please input task number!" }]}
-                initialValue={task?.id || ""}
+                initialValue={task?.identifier || ""}
               >
                 <Input className="login-input" disabled />
               </Form.Item>
-              <Form.Item label="Assignee" name="assignee" initialValue={task?.assignee || ""}>
+              <Form.Item
+                label="Assignee"
+                name="assignee"
+                initialValue={`${task?.assignedUser.firstname} ${task?.assignedUser.surname}` || ""}
+              >
                 <Input className="login-input" disabled={!editMode} />
               </Form.Item>
               <Form.Item label="Reporter" name="reporter" initialValue={task?.reporter || ""}>

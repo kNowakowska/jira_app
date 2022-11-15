@@ -6,25 +6,35 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { Layout, Button, Space, Typography } from "antd";
 
-import { initialTasks, initialColumns, columnOrder } from "../data";
 import Column from "../components/Column";
 import ConfirmModal from "../components/ConfirmModal";
 import EditBoardModal from "../components/EditBoardModal";
 import AssignedUsersModal from "../components/AssignedUsersModal";
-import { BoardType } from "../types";
+import { BoardType, columnTypeMap, DroppableColumnType, TaskType } from "../types";
 import { getBoard, updateBoard, deleteBoard } from "../api/boards";
 
 const { Title } = Typography;
+
+export const columnOrder = ["TO_DO", "IN_PROGRESS", "READY_FOR_TESTING", "TESTING", "DONE"];
 
 const BoardPage: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [board, setBoard] = useState<BoardType | null>(null);
-  const [columns, setColumns] = useState(initialColumns);
+  const [columns, setColumns] = useState<DroppableColumnType>(
+    Object.entries(columnTypeMap).reduce((acc: DroppableColumnType, [key, value]) => {
+      acc[key as keyof typeof acc] = { id: key, title: value, taskIds: [] };
+      return acc;
+    }, {})
+  );
   const [editBoard, setEditBoard] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [usersModalOpen, setUsersModalOpen] = useState(false);
+
+  useEffect(() => {
+    //set initial columns without saved data
+  }, []);
 
   useEffect(() => {
     getBoard(id, setBoard);
@@ -45,12 +55,12 @@ const BoardPage: React.FC = () => {
     const finish = columns[destination.droppableId as keyof typeof columns];
 
     if (start === finish) {
-      const newTaskIds = Array.from(start.taskIds);
+      const newTaskIds = Array.from(start.taskIds || []);
       newTaskIds.splice(source.index, 1);
       newTaskIds.splice(destination.index, 0, draggableId);
 
       const newColumn = { ...start, taskIds: newTaskIds };
-      setColumns({ ...columns, [newColumn.id]: newColumn });
+      setColumns({ ...columns, [newColumn?.id]: newColumn });
       return;
     }
 
@@ -128,7 +138,7 @@ const BoardPage: React.FC = () => {
             <DragDropContext onDragEnd={onDragEnd}>
               {columnOrder.map((columnId: string) => {
                 const column = columns[columnId as keyof typeof columns];
-                const tasks = column.taskIds.map((taskId: string) => initialTasks[taskId as keyof typeof initialTasks]);
+                const tasks = (board?.tasks || []).filter((task: TaskType) => column.taskIds.includes(task.identifier));
 
                 return <Column key={column.id} column={column} tasks={tasks} />;
               })}
