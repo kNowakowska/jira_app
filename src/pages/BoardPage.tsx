@@ -12,7 +12,7 @@ import EditBoardModal from "../components/EditBoardModal";
 import AssignedUsersModal from "../components/AssignedUsersModal";
 import { BoardType, DroppableColumnType, TaskType } from "../types";
 import { getBoard, updateBoard, deleteBoard } from "../api/boards";
-import { getTasks } from "../api/tasks";
+import { getTasks, changeTaskOrder, changeTaskStatus } from "../api/tasks";
 import { COLUMN_TYPE_MAP } from "../constants";
 
 const { Title } = Typography;
@@ -73,7 +73,10 @@ const BoardPage: React.FC = () => {
       newTaskIds.splice(destination.index, 0, draggableId);
 
       const newColumn = { ...start, taskIds: newTaskIds };
-      setColumns({ ...columns, [newColumn?.id]: newColumn });
+      if (board?.identifier)
+        changeTaskOrder(board?.identifier, draggableId, { positionInColumn: destination.index + 1 }, () => {
+          setColumns({ ...columns, [newColumn?.id]: newColumn });
+        });
       return;
     }
 
@@ -91,7 +94,15 @@ const BoardPage: React.FC = () => {
       taskIds: finishTaskIds,
     };
 
-    setColumns({ ...columns, [newStart.id]: newStart, [newFinish.id]: newFinish });
+    if (board?.identifier)
+      changeTaskStatus(
+        board?.identifier,
+        draggableId,
+        { positionInColumn: destination.index + 1, newTaskColumn: finish.id },
+        () => {
+          setColumns({ ...columns, [newStart.id]: newStart, [newFinish.id]: newFinish });
+        }
+      );
   };
 
   const openEditBoardModal = () => {

@@ -37,7 +37,6 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   // const assigneeValue = Form.useWatch("assignee", taskExtraForm);
   const priorityValue = Form.useWatch("priority", taskExtraForm);
 
-
   useEffect(() => {
     if (!create) {
       getTask(id, (task) => {
@@ -162,7 +161,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                   label="Task number"
                   name="number"
                   rules={[{ required: true, message: "Please input task number!" }]}
-                  initialValue={task?.identifier || ""}
+                  initialValue={task?.taskNumber || ""}
                 >
                   <Input className="login-input" disabled />
                 </Form.Item>

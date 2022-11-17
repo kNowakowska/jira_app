@@ -78,3 +78,47 @@ export const deleteTask = (taskId: string | undefined, successCallback: () => vo
       error("Couldn't delete task", err.response.data.message);
     });
 };
+
+type ChangeStatusDataType = {
+  newTaskColumn?: string;
+  positionInColumn: number;
+};
+
+export const changeTaskStatus = (
+  boardId: string,
+  taskId: string,
+  changeStatusData: ChangeStatusDataType,
+  successCallback: () => void
+) => {
+  axiosInstance
+    .put(`/tasks/${taskId}/columns`, changeStatusData)
+    .then(() => {
+      getTasks(boardId);
+      successCallback();
+      //TODO: sprawdzić działanie store
+    })
+    .catch((err) => {
+      console.error(err.message);
+      error("Error when changing status of task", err.response.data.message);
+    });
+};
+
+export const changeTaskOrder = (
+  boardId: string,
+  taskId: string,
+  changeOrderData: ChangeStatusDataType,
+  successCallback: () => void
+) => {
+  axiosInstance
+    .put(`/tasks/${taskId}/order`, changeOrderData)
+    .then(() => {
+      getTasks(boardId);
+      successCallback();
+
+      //TODO: sprawdzić działanie store
+    })
+    .catch((err) => {
+      console.error(err.message);
+      error("Error when changing order of task", err.response.data.message);
+    });
+};
