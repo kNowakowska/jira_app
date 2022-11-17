@@ -63,7 +63,10 @@ const CreateBoardPage = () => {
               <Form.Item
                 label="Board shortcut"
                 name="shortcut"
-                rules={[{ required: true, message: "Please input board shortcut!" }]}
+                rules={[
+                  { required: true, message: "Please input board shortcut!" },
+                  { type: "string", max: 3 },
+                ]}
                 initialValue=""
               >
                 <Input className="login-input" />

@@ -147,6 +147,25 @@ const BoardPage: React.FC = () => {
     setUsersModalOpen(false);
   };
 
+  const onBoardChange = () => {
+    //TODO: do usunięcia, będzie podmianka w reduxie
+    getBoard(id, (board) => {
+      setBoard(board);
+      setColumns((prevCol) =>
+        Object.keys(COLUMN_TYPE_MAP).reduce((acc, column) => {
+          acc[column as keyof typeof acc] = {
+            ...acc[column as keyof typeof acc],
+            taskIds: (board.tasks || [])
+              .filter((task) => task.boardColumn === column)
+              .sort((task) => task?.orderInColumn || 0)
+              .map((task) => task?.identifier || ""),
+          };
+          return acc;
+        }, prevCol)
+      );
+    });
+  };
+
   const isOwner = localStorage.getItem("userId") === board?.owner?.identifier;
 
   const goToCreateTaskPage = () => {
@@ -202,7 +221,15 @@ const BoardPage: React.FC = () => {
         description="This action is permament. Are you sure you want to delete this board?"
       />
       <EditBoardModal open={editBoard} onOk={editBoardHandler} onCancel={closeEditBoardModal} boardName={board?.name || ""} />
-      <AssignedUsersModal open={usersModalOpen} onOk={closeUsersModal} onClose={closeUsersModal} />
+      <AssignedUsersModal
+        open={usersModalOpen}
+        onOk={closeUsersModal}
+        onClose={closeUsersModal}
+        isOwner={isOwner}
+        boardId={board?.identifier}
+        contributors={board?.contributors || []}
+        onChange={onBoardChange}
+      />
     </Layout>
   );
 };
