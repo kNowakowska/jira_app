@@ -10,8 +10,10 @@ import Column from "../components/Column";
 import ConfirmModal from "../components/ConfirmModal";
 import EditBoardModal from "../components/EditBoardModal";
 import AssignedUsersModal from "../components/AssignedUsersModal";
-import { BoardType, columnTypeMap, DroppableColumnType, TaskType } from "../types";
+import { BoardType, DroppableColumnType, TaskType } from "../types";
 import { getBoard, updateBoard, deleteBoard } from "../api/boards";
+import { getTasks } from "../api/tasks";
+import { COLUMN_TYPE_MAP } from "../constants";
 
 const { Title } = Typography;
 
@@ -23,7 +25,7 @@ const BoardPage: React.FC = () => {
 
   const [board, setBoard] = useState<BoardType | null>(null);
   const [columns, setColumns] = useState<DroppableColumnType>(
-    Object.entries(columnTypeMap).reduce((acc: DroppableColumnType, [key, value]) => {
+    Object.entries(COLUMN_TYPE_MAP).reduce((acc: DroppableColumnType, [key, value]) => {
       acc[key as keyof typeof acc] = { id: key, title: value, taskIds: [] };
       return acc;
     }, {})
@@ -33,11 +35,22 @@ const BoardPage: React.FC = () => {
   const [usersModalOpen, setUsersModalOpen] = useState(false);
 
   useEffect(() => {
-    //set initial columns without saved data
-  }, []);
-
-  useEffect(() => {
-    getBoard(id, setBoard);
+    getBoard(id, (board) => {
+      setBoard(board);
+      setColumns((prevCol) =>
+        Object.keys(COLUMN_TYPE_MAP).reduce((acc, column) => {
+          acc[column as keyof typeof acc] = {
+            ...acc[column as keyof typeof acc],
+            taskIds: (board.tasks || [])
+              .filter((task) => task.boardColumn === column)
+              .sort((task) => task?.orderInColumn || 0)
+              .map((task) => task?.identifier || ""),
+          };
+          return acc;
+        }, prevCol)
+      );
+    });
+    if (id) getTasks(id);
   }, [id]);
 
   const onDragEnd = (result: DropResult) => {
@@ -125,6 +138,10 @@ const BoardPage: React.FC = () => {
 
   const isOwner = localStorage.getItem("userId") === board?.owner?.identifier;
 
+  const goToCreateTaskPage = () => {
+    navigate("/tasks/new_task", { state: { boardId: board?.identifier } });
+  };
+
   return (
     <Layout>
       <Layout.Content className="board-content">
@@ -138,7 +155,9 @@ const BoardPage: React.FC = () => {
             <DragDropContext onDragEnd={onDragEnd}>
               {columnOrder.map((columnId: string) => {
                 const column = columns[columnId as keyof typeof columns];
-                const tasks = (board?.tasks || []).filter((task: TaskType) => column.taskIds.includes(task.identifier));
+                const tasks = (board?.tasks || []).filter(
+                  (task: TaskType) => task?.identifier && column.taskIds.includes(task.identifier)
+                );
 
                 return <Column key={column.id} column={column} tasks={tasks} />;
               })}
@@ -157,6 +176,9 @@ const BoardPage: React.FC = () => {
             )}
             <Button type="primary" size="large" onClick={openUsersModal} className="action-btn">
               Assigned users
+            </Button>
+            <Button type="primary" size="large" onClick={goToCreateTaskPage} className="action-btn">
+              Add task
             </Button>
           </div>
         </div>

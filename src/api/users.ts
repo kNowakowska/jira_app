@@ -5,6 +5,7 @@ import success from "../components/SuccessDialog";
 
 import { store } from "../redux/store";
 import { logIn, logOut } from "../redux/systemSlice";
+import { receiveUsers } from "../redux/usersSlice";
 import { clearBoards } from "../redux/boardsSlice";
 import { UserType } from "../types";
 
@@ -31,8 +32,8 @@ export const getUser = (userId: string | null, successCallback: (user: UserType)
 export const getUsers = () => {
   axiosInstance
     .get<UserType[]>(`/users`)
-    .then(() => {
-      //TODO: successCallback
+    .then((response) => {
+      store.dispatch(receiveUsers(response.data));
     })
     .catch((err) => {
       console.error(err.message);

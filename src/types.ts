@@ -16,14 +16,6 @@ export type UserType = {
 
 export type TaskPriorityType = "HIGHEST" | "MEDIUM" | "LOWER";
 
-export const columnTypeMap = {
-  TO_DO: "To do",
-  IN_PROGRESS: "In progress",
-  READY_FOR_TESTING: "Ready for testing",
-  TESTING: "Testing",
-  DONE: "Done",
-};
-
 export type ColumnType = "TO_DO" | "IN_PROGRESS" | "READY_FOR_TESTING" | "TESTING" | "DONE";
 
 export type DroppableColumnType = { [key: string]: ColumnDefinitionType };
@@ -35,26 +27,27 @@ export type ColumnDefinitionType = {
 };
 
 export type TaskType = {
-  identifier: string;
+  identifier?: string;
   title: string;
-  taskNumber: string;
+  taskNumber?: string;
   description?: string;
-  creationDate: string;
-  boardColumn: ColumnType;
+  creationDate?: string;
+  boardColumn?: ColumnType;
   taskPriority: TaskPriorityType;
-  loggedTime: 0;
-  assignedUser: {
+  loggedTime?: 0;
+  assignedUser?: {
     identifier: string;
     email: string;
     firstname: string;
     surname: string;
   };
-  reporter: {
+  reporter?: {
     identifier: string;
     email: string;
     firstname: string;
     surname: string;
   };
   board?: string;
-
+  assignedUserIdentifier?: string;
+  orderInColumn?: number;
 };

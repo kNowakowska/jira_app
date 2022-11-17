@@ -1,7 +1,8 @@
 import { Space, Typography, Divider } from "antd";
-import { TaskType, columnTypeMap, ColumnDefinitionType } from "../types";
+import { TaskType, ColumnDefinitionType } from "../types";
 import TaskCard from "./TaskCard";
 import { Droppable } from "react-beautiful-dnd";
+import { COLUMN_TYPE_MAP } from "../constants";
 
 import "./css/Column.css";
 
@@ -16,7 +17,7 @@ const Column: React.FC<ColumnPropsType> = ({ column, tasks }: ColumnPropsType) =
   return (
     <Space direction="vertical" size="middle" className="column-space">
       <Title level={3} className="column-title">
-        {columnTypeMap[column.id as keyof typeof columnTypeMap]}
+        {COLUMN_TYPE_MAP[column.id as keyof typeof COLUMN_TYPE_MAP]}
       </Title>
       <Divider className="column-divider" />
       <Droppable droppableId={column.id}>

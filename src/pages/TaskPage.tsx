@@ -1,31 +1,49 @@
 import "../css/TaskPage.css";
 
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Layout, Space, Typography, Input, Button, Form } from "antd";
+import { Layout, Space, Typography, Input, Button, Form, Select } from "antd";
 
-import { TaskType } from "../types";
+import { TaskType, ColumnType } from "../types";
 import ConfirmModal from "../components/ConfirmModal";
+import { getTask, createTask, updateTask, deleteTask } from "../api/tasks";
+import { useAppSelector } from "../redux/hooks";
+import { TASK_PRIORITY_MAP } from "../constants";
 
 const { Title } = Typography;
 const { TextArea } = Input;
 
-const TaskPage = () => {
+type TaskPageProps = {
+  create?: boolean;
+};
+
+const TaskPage = ({ create = false }: TaskPageProps) => {
   const { id } = useParams();
+  const { state } = useLocation();
   const navigate = useNavigate();
 
+  const users = useAppSelector((state) => state.users.users);
+
   const [task, setTask] = useState<null | TaskType>(null);
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(create);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const [taskMainForm] = Form.useForm<{ title: string; description: string }>();
   const [taskExtraForm] = Form.useForm<{ assignee: string }>();
+  const titleValue = Form.useWatch("title", taskMainForm);
+  const descValue = Form.useWatch("description", taskMainForm);
+  // const assigneeValue = Form.useWatch("assignee", taskExtraForm);
+  const priorityValue = Form.useWatch("priority", taskExtraForm);
+
 
   useEffect(() => {
-    //TODO: pobieranie taska
-    setTask(null);
+    if (!create) {
+      getTask(id, (task) => {
+        setTask(task);
+      });
+    }
   }, [id]);
 
   useEffect(() => {
@@ -34,6 +52,9 @@ const TaskPage = () => {
   }, [task]);
 
   const cancelSave = () => {
+    if (create) {
+      goToBoard();
+    }
     setEditMode(false);
     taskMainForm.resetFields();
     taskExtraForm.resetFields();
@@ -47,8 +68,13 @@ const TaskPage = () => {
     setConfirmModalOpen(true);
   };
 
-  const deleteTask = () => {
-    if (task) navigate(`/boards/${task?.board}`);
+  const handleDeleteTask = () => {
+    if (task) {
+      setConfirmModalOpen(false);
+      deleteTask(task.identifier, () => {
+        navigate(`/boards/${state.boardId}`);
+      });
+    }
   };
 
   const cancelDeleteTask = () => {
@@ -56,8 +82,33 @@ const TaskPage = () => {
   };
 
   const saveTask = () => {
-    setEditMode(false);
+    const taskData = {
+      title: titleValue,
+      description: descValue,
+      taskPriority: priorityValue,
+    };
+    // if (assigneeValue) taskData["assignedUserIdentifier" as keyof typeof taskData] = assigneeValue;
+    //TODO: nie dziala przekazanie assignee
+    if (task?.identifier) {
+      taskData["identifier" as keyof typeof taskData] = task.identifier;
+      updateTask(taskData, (task) => {
+        setTask(task);
+        setEditMode(false);
+      });
+    } else {
+      taskData["boardColumn" as keyof typeof taskData] = "TO_DO" as ColumnType;
+      createTask(state.boardId, taskData, (taskId) => {
+        setEditMode(false);
+        navigate(`/tasks/${taskId}`, { state: { boardId: state.boardId } });
+      });
+    }
   };
+
+  const goToBoard = () => {
+    navigate(`/boards/${state.boardId}`);
+  };
+
+  const canSave = titleValue && descValue && priorityValue;
 
   return (
     <Layout>
@@ -106,34 +157,63 @@ const TaskPage = () => {
               layout="vertical"
               form={taskExtraForm}
             >
-              <Form.Item
-                label="Task number"
-                name="number"
-                rules={[{ required: true, message: "Please input task number!" }]}
-                initialValue={task?.identifier || ""}
-              >
-                <Input className="login-input" disabled />
-              </Form.Item>
+              {!create && (
+                <Form.Item
+                  label="Task number"
+                  name="number"
+                  rules={[{ required: true, message: "Please input task number!" }]}
+                  initialValue={task?.identifier || ""}
+                >
+                  <Input className="login-input" disabled />
+                </Form.Item>
+              )}
               <Form.Item
                 label="Assignee"
                 name="assignee"
-                initialValue={`${task?.assignedUser.firstname} ${task?.assignedUser.surname}` || ""}
+                initialValue={task?.assignedUser ? `${task?.assignedUser.firstname} ${task?.assignedUser.surname}` : ""}
               >
-                <Input className="login-input" disabled={!editMode} />
+                <Select
+                  showSearch
+                  placeholder="Wybierz osobę"
+                  optionFilterProp="children"
+                  disabled={!editMode}
+                  className="select"
+                  filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+                  options={users.map((user) => ({ value: user.identifier, label: `${user.firstname} ${user.surname}` }))}
+                />
               </Form.Item>
-              <Form.Item label="Reporter" name="reporter" initialValue={task?.reporter || ""}>
-                <Input className="login-input" disabled />
+              {!create && (
+                <Form.Item
+                  label="Reporter"
+                  name="reporter"
+                  initialValue={task?.reporter ? `${task?.reporter.firstname} ${task?.reporter.surname}` : ""}
+                >
+                  <Input className="login-input" disabled />
+                </Form.Item>
+              )}
+              <Form.Item label="Priority" name="priority" initialValue={task?.taskPriority || "LOWEST"}>
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+                  options={Object.entries(TASK_PRIORITY_MAP).map(([key, value]) => ({ value: key, label: value }))}
+                  className="select"
+                  disabled={!editMode}
+                />
               </Form.Item>
             </Form>
           </div>
         </Space>
         <Space className="task-tools">
+          <Button onClick={goToBoard} type="primary" className="btn-margin" size="large" disabled={editMode}>
+            Go back to board
+          </Button>
           {editMode ? (
             <>
               <Button onClick={cancelSave} className="btn-margin" size="large">
                 Cancel
               </Button>
-              <Button onClick={saveTask} type="primary" className="btn-margin" size="large">
+              <Button onClick={saveTask} type="primary" className="btn-margin" size="large" disabled={!canSave}>
                 Save
               </Button>
             </>
@@ -150,7 +230,7 @@ const TaskPage = () => {
         </Space>
         <ConfirmModal
           open={confirmModalOpen}
-          onOk={deleteTask}
+          onOk={handleDeleteTask}
           onCancel={cancelDeleteTask}
           title="Delete task"
           description="This action is permament. Are you sure you want to delete this task?"
