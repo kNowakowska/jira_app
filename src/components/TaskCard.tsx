@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import { Tooltip } from "antd";
 import Card from "antd/lib/card/Card";
+import { useAppSelector } from "../redux/hooks";
 
 import { TaskType } from "../types";
 
@@ -14,19 +15,27 @@ type TaskPropsType = {
 };
 
 const TaskCard: React.FC<TaskPropsType> = ({ task, index }: TaskPropsType) => {
+  const boardId = useAppSelector((state) => state.tasks.boardId);
+
   const assigneeComponent = () => {
-    return <span className="task-assignee">{task.assignee || ""}</span>;
+    return (
+      <span className="task-assignee">
+        {task?.assignedUser ? `${task.assignedUser.firstname} ${task.assignedUser.surname}` : ""}
+      </span>
+    );
   };
 
   const cardTitle = () => {
     return (
       <Tooltip title="Open task" placement="bottom">
-        <Link to={`/tasks/${task.id}`}>{task.title}</Link>
+        <Link to={`/tasks/${task.identifier}`} state={{ boardId: boardId }}>
+          {task.title}
+        </Link>
       </Tooltip>
     );
   };
   return (
-    <Draggable draggableId={task.id} index={index}>
+    <Draggable draggableId={task.identifier || ""} index={index}>
       {(provided) => (
         <Card
           ref={provided.innerRef}

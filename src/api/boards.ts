@@ -53,7 +53,7 @@ export const createBoard = (boardData: BoardType, successCallback: (boardId: str
 
 export const updateBoard = (boardData: BoardType, successCallback: () => void) => {
   axiosInstance
-    .patch<BoardType>(`/boards/${boardData.identifier}`, boardData)
+    .put<BoardType>(`/boards/${boardData.identifier}`, boardData)
     .then((response) => {
       store.dispatch(editBoard(response.data));
       successCallback();
@@ -76,5 +76,33 @@ export const deleteBoard = (boardId: string | undefined, successCallback: () => 
     .catch((err) => {
       console.error(err.message);
       error("Couldn't delete board", err.response.data.message);
+    });
+};
+
+export const addContributor = (boardId: string, userId: string, successCallback: () => void) => {
+  axiosInstance
+    .put<BoardType>(`/boards/${boardId}/users/${userId}`)
+    .then(() => {
+      // store.dispatch(editBoard(response.data));
+      successCallback();
+      success("Board update success", "Your changed board data successfully.");
+    })
+    .catch((err) => {
+      console.error(err.message);
+      error("Couldn't update board", err.response.data.message);
+    });
+};
+
+export const deleteContributor = (boardId: string, userId: string, successCallback: () => void) => {
+  axiosInstance
+    .delete<BoardType>(`/boards/${boardId}/users/${userId}`)
+    .then(() => {
+      // store.dispatch(editBoard(response.data));
+      successCallback();
+      success("Board update success", "Your changed board data successfully.");
+    })
+    .catch((err) => {
+      console.error(err.message);
+      error("Couldn't update board", err.response.data.message);
     });
 };

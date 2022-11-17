@@ -14,7 +14,7 @@ import Navbar from "../components/Navbar";
 
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { logIn } from "../redux/systemSlice";
-import { getUser } from "../api/users";
+import { getUser, getUsers } from "../api/users";
 import { getBoards } from "../api/boards";
 
 export const MyRoutes: React.FC = () => {
@@ -29,6 +29,7 @@ export const MyRoutes: React.FC = () => {
         dispatch(logIn(user));
       });
       getBoards();
+      getUsers();
     }
     function checkUserData() {
       if (localStorage.getItem("token")) {
@@ -52,6 +53,7 @@ export const MyRoutes: React.FC = () => {
         <Route path="boards/:id" element={<BoardPage />} />
         <Route path="new_board" element={<CreateBoardPage />} />
         <Route path="profile/:id" element={<AccountPage />} />
+        <Route path="tasks/new_task" element={<TaskPage create />} />
         <Route path="tasks/:id" element={<TaskPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -25,7 +25,6 @@ export const boardSlice = createSlice({
       state.owned = action.payload.owned;
     },
     receiveAllBoards: (state, action: PayloadAction<BoardsState>) => {
-      console.log(action.payload);
       state.contributed = action.payload.contributed;
       state.owned = action.payload.owned;
     },
@@ -40,7 +39,7 @@ export const boardSlice = createSlice({
       state.owned = [...(state.owned || []), action.payload];
     },
     editBoard: (state, action) => {
-      state.owned = state.owned?.map((board) => (board.identifier !== action.payload.boardId ? board : action.payload));
+      state.owned = state.owned?.map((board) => (board.identifier !== action.payload.identifier ? board : action.payload));
     },
   },
 });

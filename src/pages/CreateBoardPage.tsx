@@ -46,7 +46,7 @@ const CreateBoardPage = () => {
       <Layout.Content className="create-board-content">
         <Space>
           <Title level={3} className="page-title">
-            Create new table
+            Create new board
           </Title>
         </Space>
         <Form
@@ -63,7 +63,10 @@ const CreateBoardPage = () => {
               <Form.Item
                 label="Board shortcut"
                 name="shortcut"
-                rules={[{ required: true, message: "Please input board shortcut!" }]}
+                rules={[
+                  { required: true, message: "Please input board shortcut!" },
+                  { type: "string", max: 3 },
+                ]}
                 initialValue=""
               >
                 <Input className="login-input" />

@@ -39,3 +39,12 @@
     justify-content: flex-end;
     align-items: center;
 }
+
+.select {
+    background-color: #bae7ff;
+}
+
+.ant-select-selector {
+    background-color: #bae7ff;
+
+}
