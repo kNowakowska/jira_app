@@ -34,10 +34,20 @@ export const taskSlice = createSlice({
     editTask: (state, action) => {
       state.tasks = state.tasks?.map((task) => (task.identifier !== action.payload.identifier ? task : action.payload));
     },
+    addComment: (state, action) => {
+      console.log(state, action);
+    },
+    editComment: (state, action) => {
+      console.log(state, action);
+    },
+    removeComment: (state, action) => {
+      console.log(state, action);
+    },
   },
 });
 
-export const { receiveTasks, clearTasks, removeTask, addTask, editTask } = taskSlice.actions;
+export const { receiveTasks, clearTasks, removeTask, addTask, editTask, addComment, editComment, removeComment } =
+  taskSlice.actions;
 
 export const getTasks = (state: RootState) => state.tasks;
 

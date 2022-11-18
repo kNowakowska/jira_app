@@ -1,0 +1,10 @@
+.add-comment-section {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 15px
+}
+
+.add-comment-btn {
+    background-color: #bae7ff;
+    border-color: #40a9ff
+}

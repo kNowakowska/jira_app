@@ -1,0 +1,14 @@
+.add-edit-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px
+}
+
+.add-edit-input {
+    width: 75%
+}
+
+.add-edit-btn {
+    width: 10%
+}

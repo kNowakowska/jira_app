@@ -35,19 +35,17 @@ export type TaskType = {
   boardColumn?: ColumnType;
   taskPriority: TaskPriorityType;
   loggedTime?: 0;
-  assignedUser?: {
-    identifier: string;
-    email: string;
-    firstname: string;
-    surname: string;
-  };
-  reporter?: {
-    identifier: string;
-    email: string;
-    firstname: string;
-    surname: string;
-  };
+  assignedUser?: UserType;
+  reporter?: UserType;
   board?: string;
   assignedUserIdentifier?: string;
   orderInColumn?: number;
+  comments?: CommentType[];
+};
+
+export type CommentType = {
+  identifier?: string;
+  content: string;
+  createdDate?: string;
+  creator?: UserType;
 };

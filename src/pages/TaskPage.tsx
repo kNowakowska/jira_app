@@ -4,13 +4,14 @@ import { useLocation, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Layout, Space, Typography, Input, Button, Form, Select } from "antd";
+import { Layout, Space, Typography, Input, Button, Form, Select, Divider } from "antd";
 
 import { TaskType, ColumnType } from "../types";
 import ConfirmModal from "../components/ConfirmModal";
 import { getTask, createTask, updateTask, deleteTask } from "../api/tasks";
 import { useAppSelector } from "../redux/hooks";
 import { TASK_PRIORITY_MAP } from "../constants";
+import Comments from "../components/Comments";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -109,10 +110,19 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
 
   const canSave = titleValue && descValue && priorityValue;
 
+  const onCommentAdd = () => {
+    getTask(id, (task) => {
+      setTask(task);
+    });
+  };
+
   return (
     <Layout>
       <Layout.Content className="task-content">
-        <Space>
+        <Space className="task-header">
+          <Button onClick={goToBoard} type="primary" className="btn-margin" size="large" disabled={editMode}>
+            Go back to board
+          </Button>
           <Title level={3} className="page-title">
             {task?.title || ""}
           </Title>
@@ -145,6 +155,15 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 <TextArea className="login-input" disabled={!editMode} rows={5} />
               </Form.Item>
             </Form>
+
+            <Divider className="task-page-divider" />
+
+            <div className="task-comments">
+              <Title level={4} className="task-comments-title">
+                KOMENTARZE
+              </Title>
+              {task?.identifier && <Comments taskId={task?.identifier} onAdd={onCommentAdd} comments={task?.comments || []} />}
+            </div>
           </div>
           <div className="task-actions">
             <Form
@@ -166,6 +185,20 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                   <Input className="login-input" disabled />
                 </Form.Item>
               )}
+              {!create && (
+                <Form.Item
+                  label="Reporter"
+                  name="reporter"
+                  initialValue={task?.reporter ? `${task?.reporter.firstname} ${task?.reporter.surname}` : ""}
+                >
+                  <Input className="login-input" disabled />
+                </Form.Item>
+              )}
+              {!create && (
+                <Form.Item label="Creation date" name="creationDate" initialValue={task?.creationDate}>
+                  <Input className="login-input" disabled />
+                </Form.Item>
+              )}
               <Form.Item
                 label="Assignee"
                 name="assignee"
@@ -181,15 +214,6 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                   options={users.map((user) => ({ value: user.identifier, label: `${user.firstname} ${user.surname}` }))}
                 />
               </Form.Item>
-              {!create && (
-                <Form.Item
-                  label="Reporter"
-                  name="reporter"
-                  initialValue={task?.reporter ? `${task?.reporter.firstname} ${task?.reporter.surname}` : ""}
-                >
-                  <Input className="login-input" disabled />
-                </Form.Item>
-              )}
               <Form.Item label="Priority" name="priority" initialValue={task?.taskPriority || "LOWEST"}>
                 <Select
                   showSearch
@@ -201,31 +225,28 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 />
               </Form.Item>
             </Form>
+            <div className="task-tools">
+              {editMode ? (
+                <>
+                  <Button onClick={cancelSave} className="btn-margin" size="large">
+                    Cancel
+                  </Button>
+                  <Button onClick={saveTask} type="primary" className="btn-margin" size="large" disabled={!canSave}>
+                    Save
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button onClick={openConfirmationModal} className="btn-margin" size="large">
+                    Delete
+                  </Button>
+                  <Button onClick={openEditMode} type="primary" className="btn-margin" size="large">
+                    Edit
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
-        </Space>
-        <Space className="task-tools">
-          <Button onClick={goToBoard} type="primary" className="btn-margin" size="large" disabled={editMode}>
-            Go back to board
-          </Button>
-          {editMode ? (
-            <>
-              <Button onClick={cancelSave} className="btn-margin" size="large">
-                Cancel
-              </Button>
-              <Button onClick={saveTask} type="primary" className="btn-margin" size="large" disabled={!canSave}>
-                Save
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button onClick={openConfirmationModal} className="btn-margin" size="large">
-                Delete
-              </Button>
-              <Button onClick={openEditMode} type="primary" className="btn-margin" size="large">
-                Edit
-              </Button>
-            </>
-          )}
         </Space>
         <ConfirmModal
           open={confirmModalOpen}
