@@ -1,0 +1,14 @@
+.ant-comment-content-author-name {
+    color: #0279e0
+}
+
+.ant-comment-content-author-time {
+    color: #40a9ff
+}
+
+.comment {
+    width: 100%;
+    margin-bottom: 15px;
+    background-color: #bae7ff;
+    padding: 0px 15px
+}
