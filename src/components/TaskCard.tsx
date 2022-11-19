@@ -15,7 +15,7 @@ type TaskPropsType = {
 };
 
 const TaskCard: React.FC<TaskPropsType> = ({ task, index }: TaskPropsType) => {
-  const boardId = useAppSelector((state) => state.tasks.boardId);
+  const boardId = useAppSelector((state) => state.tasks.board?.identifier);
 
   const assigneeComponent = () => {
     return (

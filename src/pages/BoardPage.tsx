@@ -37,6 +37,7 @@ const BoardPage: React.FC = () => {
   useEffect(() => {
     getBoard(id, (board) => {
       setBoard(board);
+      getTasks(board);
       setColumns((prevCol) =>
         Object.keys(COLUMN_TYPE_MAP).reduce((acc, column) => {
           acc[column as keyof typeof acc] = {
@@ -50,7 +51,6 @@ const BoardPage: React.FC = () => {
         }, prevCol)
       );
     });
-    if (id) getTasks(id);
   }, [id]);
 
   const onDragEnd = (result: DropResult) => {
