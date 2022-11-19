@@ -1,4 +1,5 @@
 import { Modal, Form, Input } from "antd";
+import { useEffect } from "react";
 
 type EditBoardModalPropsType = {
   open: boolean;
@@ -10,6 +11,10 @@ type EditBoardModalPropsType = {
 const EditBoardModal = ({ open, onOk, onCancel, boardName }: EditBoardModalPropsType) => {
   const [form] = Form.useForm<{ name: string }>();
   const nameValue = Form.useWatch("name", form);
+
+  useEffect(() => {
+    form.resetFields();
+  }, [open]);
 
   const editBoard = () => {
     onOk(nameValue);

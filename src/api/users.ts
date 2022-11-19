@@ -5,7 +5,7 @@ import success from "../components/SuccessDialog";
 
 import { store } from "../redux/store";
 import { logIn, logOut } from "../redux/systemSlice";
-import { receiveUsers } from "../redux/usersSlice";
+import { receiveUsers, editUser } from "../redux/usersSlice";
 import { clearBoards } from "../redux/boardsSlice";
 import { UserType } from "../types";
 
@@ -64,6 +64,7 @@ export const updateUser = (
     .patch<UserType>(`/users/${userData.identifier}`, userData)
     .then((response) => {
       store.dispatch(logIn(response.data));
+      store.dispatch(editUser(response.data));
       successCallback(response.data);
       success("User update success", "Your changed your data successfully.");
     })
