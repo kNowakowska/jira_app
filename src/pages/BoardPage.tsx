@@ -12,7 +12,7 @@ import EditBoardModal from "../components/EditBoardModal";
 import AssignedUsersModal from "../components/AssignedUsersModal";
 import { BoardType, DroppableColumnType, TaskType } from "../types";
 import { getBoard, updateBoard, deleteBoard } from "../api/boards";
-import { getTasks, changeTaskOrder, changeTaskStatus } from "../api/tasks";
+import { changeTaskOrder, changeTaskStatus, getTasks } from "../api/tasks";
 import { COLUMN_TYPE_MAP } from "../constants";
 
 const { Title } = Typography;
@@ -35,22 +35,7 @@ const BoardPage: React.FC = () => {
   const [usersModalOpen, setUsersModalOpen] = useState(false);
 
   useEffect(() => {
-    getBoard(id, (board) => {
-      setBoard(board);
-      setColumns((prevCol) =>
-        Object.keys(COLUMN_TYPE_MAP).reduce((acc, column) => {
-          acc[column as keyof typeof acc] = {
-            ...acc[column as keyof typeof acc],
-            taskIds: (board.tasks || [])
-              .filter((task) => task.boardColumn === column)
-              .sort((task) => task?.orderInColumn || 0)
-              .map((task) => task?.identifier || ""),
-          };
-          return acc;
-        }, prevCol)
-      );
-    });
-    if (id) getTasks(id);
+    retrieveBoard();
   }, [id]);
 
   const onDragEnd = (result: DropResult) => {
@@ -122,6 +107,7 @@ const BoardPage: React.FC = () => {
     //TODO: przetestować, brak endpointu
     updateBoard(newBoardData, () => {
       setEditBoard(false);
+      retrieveBoard();
     });
   };
 
@@ -147,9 +133,10 @@ const BoardPage: React.FC = () => {
     setUsersModalOpen(false);
   };
 
-  const onBoardChange = () => {
+  const retrieveBoard = () => {
     //TODO: do usunięcia, będzie podmianka w reduxie
     getBoard(id, (board) => {
+      getTasks(board);
       setBoard(board);
       setColumns((prevCol) =>
         Object.keys(COLUMN_TYPE_MAP).reduce((acc, column) => {
@@ -228,7 +215,7 @@ const BoardPage: React.FC = () => {
         isOwner={isOwner}
         boardId={board?.identifier}
         contributors={board?.contributors || []}
-        onChange={onBoardChange}
+        onChange={retrieveBoard}
       />
     </Layout>
   );

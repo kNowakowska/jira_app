@@ -83,7 +83,6 @@ export const addContributor = (boardId: string, userId: string, successCallback:
   axiosInstance
     .put<BoardType>(`/boards/${boardId}/users/${userId}`)
     .then(() => {
-      // store.dispatch(editBoard(response.data));
       successCallback();
       success("Board update success", "Your changed board data successfully.");
     })
@@ -97,7 +96,6 @@ export const deleteContributor = (boardId: string, userId: string, successCallba
   axiosInstance
     .delete<BoardType>(`/boards/${boardId}/users/${userId}`)
     .then(() => {
-      // store.dispatch(editBoard(response.data));
       successCallback();
       success("Board update success", "Your changed board data successfully.");
     })

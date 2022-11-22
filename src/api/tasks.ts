@@ -4,19 +4,19 @@ import { store } from "../redux/store";
 import error from "../components/ErrorDialog";
 import success from "../components/SuccessDialog";
 
-import { TaskType } from "../types";
+import { BoardType, TaskType } from "../types";
 import { addTask, editTask, removeTask, receiveTasks } from "../redux/tasksSlice";
 
-export const getTasks = (boardId: string, successCallback: (task: TaskType) => void = () => null) => {
+export const getTasks = (board: BoardType, successCallback: (task: TaskType) => void = () => null) => {
   axiosInstance
-    .get<TaskType>(`/boards/${boardId}/tasks`)
+    .get<TaskType>(`/boards/${board.identifier}/tasks`)
     .then((response) => {
-      store.dispatch(receiveTasks({ boardId: boardId, tasks: response.data || [] }));
+      store.dispatch(receiveTasks({ board: board, tasks: response.data || [] }));
       successCallback(response.data);
     })
     .catch((err) => {
       //TODO: store do usunięcia na przyszłość
-      store.dispatch(receiveTasks({ boardId: boardId, tasks: [] }));
+      store.dispatch(receiveTasks({ board: board, tasks: [] }));
       console.error(err.message);
       // error("Couldn't get tasks", err.response.data.message);
     });
@@ -93,7 +93,8 @@ export const changeTaskStatus = (
   axiosInstance
     .put(`/tasks/${taskId}/columns`, changeStatusData)
     .then(() => {
-      getTasks(boardId);
+      console.log(boardId);
+      // getTasks(boardId);
       successCallback();
       //TODO: sprawdzić działanie store
     })
@@ -112,7 +113,8 @@ export const changeTaskOrder = (
   axiosInstance
     .put(`/tasks/${taskId}/order`, changeOrderData)
     .then(() => {
-      getTasks(boardId);
+      console.log(boardId);
+      // getTasks(boardId);
       successCallback();
 
       //TODO: sprawdzić działanie store

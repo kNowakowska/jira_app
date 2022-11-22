@@ -25,7 +25,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  const users = useAppSelector((state) => state.users.users);
+  const board = useAppSelector((state) => state.tasks.board);
 
   const [task, setTask] = useState<null | TaskType>(null);
   const [editMode, setEditMode] = useState(create);
@@ -35,7 +35,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const [taskExtraForm] = Form.useForm<{ assignee: string }>();
   const titleValue = Form.useWatch("title", taskMainForm);
   const descValue = Form.useWatch("description", taskMainForm);
-  // const assigneeValue = Form.useWatch("assignee", taskExtraForm);
+  const assigneeValue = Form.useWatch("assignee", taskExtraForm);
   const priorityValue = Form.useWatch("priority", taskExtraForm);
 
   useEffect(() => {
@@ -87,8 +87,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
       description: descValue,
       taskPriority: priorityValue,
     };
-    // if (assigneeValue) taskData["assignedUserIdentifier" as keyof typeof taskData] = assigneeValue;
-    //TODO: nie dziala przekazanie assignee
+    if (assigneeValue) taskData["assignedUserIdentifier" as keyof typeof taskData] = assigneeValue;
     if (task?.identifier) {
       taskData["identifier" as keyof typeof taskData] = task.identifier;
       updateTask(taskData, (task) => {
@@ -98,8 +97,8 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
     } else {
       taskData["boardColumn" as keyof typeof taskData] = "TO_DO" as ColumnType;
       createTask(state.boardId, taskData, (taskId) => {
-        setEditMode(false);
         navigate(`/tasks/${taskId}`, { state: { boardId: state.boardId } });
+        setEditMode(false);
       });
     }
   };
@@ -120,7 +119,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
     <Layout>
       <Layout.Content className="task-content">
         <Space className="task-header">
-          <Button onClick={goToBoard} type="primary" className="btn-margin" size="large" disabled={editMode}>
+          <Button onClick={goToBoard} type="primary" className="btn-margin" size="large" disabled={!create && editMode}>
             Go back to board
           </Button>
           <Title level={3} className="page-title">
@@ -211,7 +210,10 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                   disabled={!editMode}
                   className="select"
                   filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
-                  options={users.map((user) => ({ value: user.identifier, label: `${user.firstname} ${user.surname}` }))}
+                  options={[...(board?.contributors || []), board?.owner].map((user) => ({
+                    value: user?.identifier,
+                    label: `${user?.firstname} ${user?.surname}`,
+                  }))}
                 />
               </Form.Item>
               <Form.Item label="Priority" name="priority" initialValue={task?.taskPriority || "LOWEST"}>

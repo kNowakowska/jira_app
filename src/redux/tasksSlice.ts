@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import type { RootState } from "./store";
-import type { TaskType } from "../types";
+import type { BoardType, TaskType } from "../types";
 
 interface TasksState {
   tasks: TaskType[];
-  boardId: string;
+  board: BoardType | null;
 }
 
 const initialState: TasksState = {
   tasks: [],
-  boardId: "",
+  board: null,
 };
 
 export const taskSlice = createSlice({
@@ -19,11 +19,11 @@ export const taskSlice = createSlice({
   reducers: {
     receiveTasks: (state, action) => {
       state.tasks = action.payload.tasks;
-      state.boardId = action.payload.boardId;
+      state.board = { ...action.payload.board };
     },
     clearTasks: (state) => {
       state.tasks = [];
-      state.boardId = "";
+      state.board = null;
     },
     removeTask: (state, action) => {
       state.tasks = state.tasks?.filter((task) => task.identifier !== action.payload);
