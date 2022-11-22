@@ -119,7 +119,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
     <Layout>
       <Layout.Content className="task-content">
         <Space className="task-header">
-          <Button onClick={goToBoard} type="primary" className="btn-margin" size="large" disabled={editMode}>
+          <Button onClick={goToBoard} type="primary" className="btn-margin" size="large" disabled={!create && editMode}>
             Go back to board
           </Button>
           <Title level={3} className="page-title">

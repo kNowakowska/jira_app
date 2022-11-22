@@ -1,4 +1,4 @@
-.home-content{
+.home-content {
     background-color: #91d5ff;
     width: 80vw;
     height: 33vh;
@@ -7,15 +7,36 @@
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    flex-direction: column;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
-.home-content:nth-of-type(1){
+.home-content:nth-of-type(1) {
     top: 33%;
     margin-bottom: 10%
 }
 
-.home-content:nth-of-type(2){
-   top: 70% 
+.home-content:nth-of-type(2) {
+    top: 70%
+}
+
+.home-title {
+    color: whitesmoke
+}
+
+.home-board-btn {
+    width: 98%;
+    text-align: left;
+    margin-top: 15px;
+    color: #40a9ff
+}
+
+.home-boards-list-area {
+    width: 90%;
+    overflow-y: auto;
+    padding-bottom: 15px;
+    text-align: center;
 }
