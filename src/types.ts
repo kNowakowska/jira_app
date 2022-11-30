@@ -29,7 +29,7 @@ export type ColumnDefinitionType = {
 export type TaskType = {
   identifier?: string;
   title: string;
-  taskNumber?: string;
+  taskNumber: string;
   description?: string;
   creationDate?: string;
   boardColumn?: ColumnType;

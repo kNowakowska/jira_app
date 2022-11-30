@@ -5,20 +5,21 @@ import error from "../components/ErrorDialog";
 import success from "../components/SuccessDialog";
 
 import { BoardType, TaskType } from "../types";
-import { addTask, editTask, removeTask, receiveTasks } from "../redux/tasksSlice";
+import { addTask, editTask, removeTask, receiveTasks, getBoard, getSearch, getAssignedUser } from "../redux/tasksSlice";
 
-export const getTasks = (board: BoardType, successCallback: (task: TaskType) => void = () => null) => {
+export const getTasks = (board: BoardType, successCallback: (tasks: TaskType[]) => void = () => null) => {
+  const search = getSearch(store.getState());
+  const assignedUser = getAssignedUser(store.getState());
+
   axiosInstance
-    .get<TaskType>(`/boards/${board.identifier}/tasks`)
+    .get<TaskType[]>(`/boards/${board.identifier}/tasks/?search=${search}&assignedUserIdentifier=${assignedUser}`)
     .then((response) => {
       store.dispatch(receiveTasks({ board: board, tasks: response.data || [] }));
       successCallback(response.data);
     })
     .catch((err) => {
-      //TODO: store do usunięcia na przyszłość
-      store.dispatch(receiveTasks({ board: board, tasks: [] }));
       console.error(err.message);
-      // error("Couldn't get tasks", err.response.data.message);
+      error("Couldn't get tasks", err.response.data.message);
     });
 };
 
@@ -34,7 +35,7 @@ export const getTask = (taskId: string | undefined, successCallback: (task: Task
     });
 };
 
-export const createTask = (boardId: string, taskData: TaskType, successCallback: (taskId: string) => void) => {
+export const createTask = (boardId: string, taskData: Partial<TaskType>, successCallback: (taskId: string) => void) => {
   axiosInstance
     .post(`/boards/${boardId}/tasks`, taskData)
     .then((response) => {
@@ -49,7 +50,7 @@ export const createTask = (boardId: string, taskData: TaskType, successCallback:
     });
 };
 
-export const updateTask = (taskData: TaskType, successCallback: (task: TaskType) => void) => {
+export const updateTask = (taskData: Partial<TaskType>, successCallback: (task: TaskType) => void) => {
   axiosInstance
     .patch<TaskType>(`/tasks/${taskData.identifier}`, taskData)
     .then((response) => {
@@ -85,37 +86,37 @@ type ChangeStatusDataType = {
 };
 
 export const changeTaskStatus = (
-  boardId: string,
   taskId: string,
   changeStatusData: ChangeStatusDataType,
-  successCallback: () => void
-) => {
+  successCallback: (tasks: TaskType[]) => void
+) =>
   axiosInstance
     .put(`/tasks/${taskId}/columns`, changeStatusData)
     .then(() => {
-      console.log(boardId);
-      // getTasks(boardId);
-      successCallback();
+      const board = getBoard(store.getState());
+      if (board) {
+        getTasks(board, successCallback);
+      }
+
       //TODO: sprawdzić działanie store
     })
     .catch((err) => {
       console.error(err.message);
       error("Error when changing status of task", err.response.data.message);
     });
-};
 
 export const changeTaskOrder = (
-  boardId: string,
   taskId: string,
   changeOrderData: ChangeStatusDataType,
-  successCallback: () => void
-) => {
+  successCallback: (tasks: TaskType[]) => void
+) =>
   axiosInstance
     .put(`/tasks/${taskId}/order`, changeOrderData)
     .then(() => {
-      console.log(boardId);
-      // getTasks(boardId);
-      successCallback();
+      const board = getBoard(store.getState());
+      if (board) {
+        getTasks(board, successCallback);
+      }
 
       //TODO: sprawdzić działanie store
     })
@@ -123,4 +124,3 @@ export const changeTaskOrder = (
       console.error(err.message);
       error("Error when changing order of task", err.response.data.message);
     });
-};
