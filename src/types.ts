@@ -1,10 +1,28 @@
+export type TaskPriorityType = "HIGHEST" | "MEDIUM" | "LOWER";
+
+export type ColumnType = "TO_DO" | "IN_PROGRESS" | "READY_FOR_TESTING" | "TESTING" | "DONE";
+
+export type LoginRequestType = {
+  email: string;
+  password: string;
+};
+
+export type LoginResponseType = {
+  accessToken: string;
+  userIdentifier: string;
+};
+
+export type LogoutResponseType = {
+  userIdentifier?: string;
+};
+
 export type BoardType = {
-  identifier?: string;
-  shortcut?: string;
+  identifier: string;
+  shortcut: string;
   name: string;
-  owner?: UserType;
-  contributors?: UserType[] | [];
-  tasks?: TaskType[] | [];
+  owner: UserType;
+  contributors: UserType[];
+  tasks: TaskType[];
 };
 
 export type UserType = {
@@ -14,10 +32,6 @@ export type UserType = {
   email: string;
 };
 
-export type TaskPriorityType = "HIGHEST" | "MEDIUM" | "LOWER";
-
-export type ColumnType = "TO_DO" | "IN_PROGRESS" | "READY_FOR_TESTING" | "TESTING" | "DONE";
-
 export type DroppableColumnType = { [key: string]: ColumnDefinitionType };
 
 export type ColumnDefinitionType = {
@@ -26,26 +40,30 @@ export type ColumnDefinitionType = {
   taskIds: string[];
 };
 
+export type ChangeTaskStatusRequestType = {
+  newTaskColumn?: string;
+  positionInColumn: number;
+};
+
 export type TaskType = {
-  identifier?: string;
+  identifier: string;
   title: string;
   taskNumber: string;
   description?: string;
-  creationDate?: string;
-  boardColumn?: ColumnType;
+  creationDate: string;
+  boardColumn: ColumnType;
   taskPriority: TaskPriorityType;
   loggedTime?: 0;
   assignedUser?: UserType;
-  reporter?: UserType;
-  board?: string;
+  reporter: UserType;
   assignedUserIdentifier?: string;
-  orderInColumn?: number;
-  comments?: CommentType[];
+  orderInColumn: number;
+  comments: CommentType[];
 };
 
 export type CommentType = {
-  identifier?: string;
+  identifier: string;
   content: string;
-  createdDate?: string;
-  creator?: UserType;
+  createdDate: string;
+  creator: UserType;
 };

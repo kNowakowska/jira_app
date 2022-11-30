@@ -4,7 +4,7 @@ import { store } from "../redux/store";
 import error from "../components/ErrorDialog";
 import success from "../components/SuccessDialog";
 
-import { BoardType, TaskType } from "../types";
+import { BoardType, TaskType, ChangeTaskStatusRequestType } from "../types";
 import { addTask, editTask, removeTask, receiveTasks, getBoard, getSearch, getAssignedUser } from "../redux/tasksSlice";
 
 export const getTasks = (board: BoardType, successCallback: (tasks: TaskType[]) => void = () => null) => {
@@ -23,7 +23,7 @@ export const getTasks = (board: BoardType, successCallback: (tasks: TaskType[]) 
     });
 };
 
-export const getTask = (taskId: string | undefined, successCallback: (task: TaskType) => void = () => null) => {
+export const getTask = (taskId: string, successCallback: (task: TaskType) => void = () => null) => {
   axiosInstance
     .get<TaskType>(`/tasks/${taskId}`)
     .then((response) => {
@@ -65,7 +65,7 @@ export const updateTask = (taskData: Partial<TaskType>, successCallback: (task: 
     });
 };
 
-export const deleteTask = (taskId: string | undefined, successCallback: () => void) => {
+export const deleteTask = (taskId: string, successCallback: () => void) => {
   axiosInstance
     .delete<TaskType>(`/tasks/${taskId}`)
     .then(() => {
@@ -80,14 +80,9 @@ export const deleteTask = (taskId: string | undefined, successCallback: () => vo
     });
 };
 
-type ChangeStatusDataType = {
-  newTaskColumn?: string;
-  positionInColumn: number;
-};
-
 export const changeTaskStatus = (
   taskId: string,
-  changeStatusData: ChangeStatusDataType,
+  changeStatusData: ChangeTaskStatusRequestType,
   successCallback: (tasks: TaskType[]) => void
 ) =>
   axiosInstance
@@ -97,7 +92,6 @@ export const changeTaskStatus = (
       if (board) {
         getTasks(board, successCallback);
       }
-
       //TODO: sprawdzić działanie store
     })
     .catch((err) => {
@@ -107,7 +101,7 @@ export const changeTaskStatus = (
 
 export const changeTaskOrder = (
   taskId: string,
-  changeOrderData: ChangeStatusDataType,
+  changeOrderData: ChangeTaskStatusRequestType,
   successCallback: (tasks: TaskType[]) => void
 ) =>
   axiosInstance
@@ -117,7 +111,6 @@ export const changeTaskOrder = (
       if (board) {
         getTasks(board, successCallback);
       }
-
       //TODO: sprawdzić działanie store
     })
     .catch((err) => {

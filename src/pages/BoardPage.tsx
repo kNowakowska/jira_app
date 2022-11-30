@@ -119,9 +119,10 @@ const BoardPage: React.FC = () => {
   };
 
   const removeBoard = () => {
-    deleteBoard(board?.identifier, () => {
-      navigate("/");
-    });
+    if (board)
+      deleteBoard(board.identifier, () => {
+        navigate("/");
+      });
   };
 
   const cancelDeleteBoard = () => {
@@ -138,10 +139,11 @@ const BoardPage: React.FC = () => {
 
   const retrieveBoard = () => {
     //TODO: do usunięcia, będzie podmianka w reduxie
-    getBoard(id, (board) => {
-      getTasks(board, createColumnsObj);
-      setBoard(board);
-    });
+    if (id)
+      getBoard(id, (board) => {
+        getTasks(board, createColumnsObj);
+        setBoard(board);
+      });
   };
 
   const createColumnsObj = (tasks: TaskType[]) => {

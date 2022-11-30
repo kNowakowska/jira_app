@@ -9,15 +9,7 @@ import { receiveUsers, editUser } from "../redux/usersSlice";
 import { clearBoards } from "../redux/boardsSlice";
 import { UserType } from "../types";
 
-type UserRequestDataType = {
-  email: string;
-  firstname: string;
-  surname: string;
-  password?: string;
-  identifier?: string;
-};
-
-export const getUser = (userId: string | null, successCallback: (user: UserType) => void = () => null) => {
+export const getUser = (userId: string, successCallback: (user: UserType) => void = () => null) => {
   axiosInstance
     .get<UserType>(`/users/${userId}`)
     .then((response) => {
@@ -41,7 +33,7 @@ export const getUsers = () => {
     });
 };
 
-export const createUser = (userData: UserRequestDataType, successCallback: () => void) => {
+export const createUser = (userData: Partial<UserType> & { password: string }, successCallback: () => void) => {
   axiosInstance
     .post<UserType>(`/users`, userData)
     .then(() => {
@@ -56,7 +48,7 @@ export const createUser = (userData: UserRequestDataType, successCallback: () =>
 };
 
 export const updateUser = (
-  userData: UserRequestDataType,
+  userData: Partial<UserType> & { password?: string },
   successCallback: (user: UserType) => void,
   errorCallback: () => void
 ) => {

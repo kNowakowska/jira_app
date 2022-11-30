@@ -39,7 +39,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const priorityValue = Form.useWatch("priority", taskExtraForm);
 
   useEffect(() => {
-    if (!create) {
+    if (!create && id) {
       getTask(id, (task) => {
         setTask(task);
       });
@@ -110,9 +110,10 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const canSave = titleValue && descValue && priorityValue;
 
   const onCommentAdd = () => {
-    getTask(id, (task) => {
-      setTask(task);
-    });
+    if (id)
+      getTask(id, (task) => {
+        setTask(task);
+      });
   };
 
   return (

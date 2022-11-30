@@ -7,7 +7,7 @@ import { addComment, editComment, removeComment } from "../redux/tasksSlice";
 import error from "../components/ErrorDialog";
 import success from "../components/SuccessDialog";
 
-export const createComment = (taskId: string, commentData: CommentType, successCallback: () => void) => {
+export const createComment = (taskId: string, commentData: Pick<CommentType, "content">, successCallback: () => void) => {
   axiosInstance
     .post(`/tasks/${taskId}/comments`, commentData)
     .then((response) => {
@@ -22,7 +22,7 @@ export const createComment = (taskId: string, commentData: CommentType, successC
     });
 };
 
-export const updateComment = (commentId: string, commentData: CommentType, successCallback: () => void) => {
+export const updateComment = (commentId: string, commentData: Pick<CommentType, "content">, successCallback: () => void) => {
   axiosInstance
     .patch(`/comments/${commentId}`, commentData)
     .then((response) => {

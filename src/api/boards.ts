@@ -7,7 +7,7 @@ import success from "../components/SuccessDialog";
 import { BoardType } from "../types";
 import { receiveAllBoards, removeBoard, addBoard, editBoard } from "../redux/boardsSlice";
 
-export const getBoard = (boardId: string | undefined, successCallback: (board: BoardType) => void = () => null) => {
+export const getBoard = (boardId: string, successCallback: (board: BoardType) => void = () => null) => {
   axiosInstance
     .get<BoardType>(`/boards/${boardId}`)
     .then((response) => {
@@ -37,7 +37,7 @@ export const getBoards = () => {
     });
 };
 
-export const createBoard = (boardData: BoardType, successCallback: (boardId: string) => void) => {
+export const createBoard = (boardData: Partial<BoardType>, successCallback: (boardId: string) => void) => {
   axiosInstance
     .post<BoardType>(`/boards`, boardData)
     .then((response) => {
@@ -51,7 +51,7 @@ export const createBoard = (boardData: BoardType, successCallback: (boardId: str
     });
 };
 
-export const updateBoard = (boardData: BoardType, successCallback: () => void) => {
+export const updateBoard = (boardData: Partial<BoardType>, successCallback: () => void) => {
   axiosInstance
     .put<BoardType>(`/boards/${boardData.identifier}`, boardData)
     .then((response) => {
@@ -65,7 +65,7 @@ export const updateBoard = (boardData: BoardType, successCallback: () => void) =
     });
 };
 
-export const deleteBoard = (boardId: string | undefined, successCallback: () => void) => {
+export const deleteBoard = (boardId: string, successCallback: () => void) => {
   axiosInstance
     .delete<BoardType>(`/boards/${boardId}`)
     .then(() => {
