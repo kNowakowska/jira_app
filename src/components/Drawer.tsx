@@ -66,8 +66,8 @@ const CustomDrawer: React.FC<DrawerProps & CustomDrawerType> = ({ onClose, open 
   ];
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
-    if (key === "log_out") {
-      logOut(loggedUser?.identifier, goHome);
+    if (key === "log_out" && loggedUser) {
+      logOut(loggedUser.identifier, goHome);
     } else {
       onClose?.();
     }

@@ -7,22 +7,9 @@ import { logIn as logInAction, logOut as logOutAction } from "../redux/systemSli
 import { clearBoards } from "../redux/boardsSlice";
 import { getUser } from "./users";
 import { getBoards } from "./boards";
+import { LoginRequestType, LoginResponseType, LogoutResponseType } from "../types";
 
-type LoginDataType = {
-  email: string;
-  password: string;
-};
-
-type LoginResponseType = {
-  accessToken: string;
-  userIdentifier: string;
-};
-
-type LogoutDataType = {
-  userIdentifier?: string;
-};
-
-export const logIn = (loginData: LoginDataType, successCallback: () => void, errorCallback: (errMsg: string) => void) => {
+export const logIn = (loginData: LoginRequestType, successCallback: () => void, errorCallback: (errMsg: string) => void) => {
   axiosInstance
     .post<LoginResponseType>("/auth/login", loginData)
     .then((response) => {
@@ -42,8 +29,8 @@ export const logIn = (loginData: LoginDataType, successCallback: () => void, err
     });
 };
 
-export const logOut = (userId: string | undefined, successCallback: () => void) => {
-  const logoutData: LogoutDataType = { userIdentifier: userId };
+export const logOut = (userId: string, successCallback: () => void) => {
+  const logoutData: LogoutResponseType = { userIdentifier: userId };
   axiosInstance
     .post("/auth/logout", logoutData)
     .then(() => {

@@ -1,10 +1,11 @@
 import "../css/BoardPage.css";
 
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
 
-import { Layout, Button, Space, Typography } from "antd";
+import { Layout, Button, Space, Typography, AutoComplete, Radio } from "antd";
 
 import Column from "../components/Column";
 import ConfirmModal from "../components/ConfirmModal";
@@ -13,6 +14,7 @@ import AssignedUsersModal from "../components/AssignedUsersModal";
 import { BoardType, DroppableColumnType, TaskType } from "../types";
 import { getBoard, updateBoard, deleteBoard } from "../api/boards";
 import { changeTaskOrder, changeTaskStatus, getTasks } from "../api/tasks";
+import { searchPhrase, filterUser } from "../redux/tasksSlice";
 import { COLUMN_TYPE_MAP } from "../constants";
 
 const { Title } = Typography;
@@ -21,7 +23,11 @@ export const columnOrder = ["TO_DO", "IN_PROGRESS", "READY_FOR_TESTING", "TESTIN
 
 const BoardPage: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { id } = useParams();
+
+  const allTasks = useAppSelector((state) => state.tasks.tasks);
+  const filteredTasks = useAppSelector((state) => state.tasks.filteredTasks);
 
   const [board, setBoard] = useState<BoardType | null>(null);
   const [columns, setColumns] = useState<DroppableColumnType>(
@@ -33,10 +39,12 @@ const BoardPage: React.FC = () => {
   const [editBoard, setEditBoard] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [usersModalOpen, setUsersModalOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedUser, setSelectedUser] = useState("");
 
   useEffect(() => {
     retrieveBoard();
-  }, [id]);
+  }, [id, searchValue, selectedUser]);
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -58,10 +66,10 @@ const BoardPage: React.FC = () => {
       newTaskIds.splice(destination.index, 0, draggableId);
 
       const newColumn = { ...start, taskIds: newTaskIds };
-      if (board?.identifier)
-        changeTaskOrder(board?.identifier, draggableId, { positionInColumn: destination.index + 1 }, () => {
-          setColumns({ ...columns, [newColumn?.id]: newColumn });
-        });
+      setColumns({ ...columns, [newColumn?.id]: newColumn });
+      if (board?.identifier) {
+        changeTaskOrder(draggableId, { positionInColumn: destination.index }, createColumnsObj);
+      }
       return;
     }
 
@@ -79,15 +87,10 @@ const BoardPage: React.FC = () => {
       taskIds: finishTaskIds,
     };
 
+    setColumns({ ...columns, [newStart.id]: newStart, [newFinish.id]: newFinish });
+
     if (board?.identifier)
-      changeTaskStatus(
-        board?.identifier,
-        draggableId,
-        { positionInColumn: destination.index + 1, newTaskColumn: finish.id },
-        () => {
-          setColumns({ ...columns, [newStart.id]: newStart, [newFinish.id]: newFinish });
-        }
-      );
+      changeTaskStatus(draggableId, { positionInColumn: destination.index, newTaskColumn: finish.id }, createColumnsObj);
   };
 
   const openEditBoardModal = () => {
@@ -116,9 +119,10 @@ const BoardPage: React.FC = () => {
   };
 
   const removeBoard = () => {
-    deleteBoard(board?.identifier, () => {
-      navigate("/");
-    });
+    if (board)
+      deleteBoard(board.identifier, () => {
+        navigate("/");
+      });
   };
 
   const cancelDeleteBoard = () => {
@@ -135,28 +139,47 @@ const BoardPage: React.FC = () => {
 
   const retrieveBoard = () => {
     //TODO: do usunięcia, będzie podmianka w reduxie
-    getBoard(id, (board) => {
-      getTasks(board);
-      setBoard(board);
-      setColumns((prevCol) =>
-        Object.keys(COLUMN_TYPE_MAP).reduce((acc, column) => {
+    if (id)
+      getBoard(id, (board) => {
+        getTasks(board, createColumnsObj);
+        setBoard(board);
+      });
+  };
+
+  const createColumnsObj = (tasks: TaskType[]) => {
+    setColumns((prevCol) =>
+      Object.keys(COLUMN_TYPE_MAP).reduce(
+        (acc, column) => {
           acc[column as keyof typeof acc] = {
             ...acc[column as keyof typeof acc],
-            taskIds: (board.tasks || [])
+            taskIds: (tasks || [])
               .filter((task) => task.boardColumn === column)
-              .sort((task) => task?.orderInColumn || 0)
+              .sort((task1, task2) =>
+                task1?.orderInColumn === undefined || task2?.orderInColumn === undefined
+                  ? 0
+                  : task1?.orderInColumn - task2?.orderInColumn
+              )
               .map((task) => task?.identifier || ""),
           };
           return acc;
-        }, prevCol)
-      );
-    });
+        },
+        { ...prevCol }
+      )
+    );
   };
 
   const isOwner = localStorage.getItem("userId") === board?.owner?.identifier;
 
   const goToCreateTaskPage = () => {
     navigate("/tasks/new_task", { state: { boardId: board?.identifier } });
+  };
+
+  const unselectRadioBtn = (e: React.MouseEvent<HTMLInputElement>) => {
+    const clickedBtn = e.target as HTMLInputElement;
+    if (clickedBtn.type === "radio" && selectedUser === clickedBtn.value) {
+      setSelectedUser("");
+      dispatch(filterUser(""));
+    }
   };
 
   return (
@@ -167,20 +190,56 @@ const BoardPage: React.FC = () => {
             {board?.name || ""}
           </Title>
         </Space>
+        <div onClick={unselectRadioBtn}>
+          <Radio.Group
+            className="users-filters-sections"
+            buttonStyle="solid"
+            value={selectedUser}
+            onChange={(e) => {
+              setSelectedUser(e.target.value);
+              dispatch(filterUser(e.target.value));
+            }}
+          >
+            {board?.contributors?.map((user) => (
+              <Radio.Button value={user.identifier} key={user.identifier} className="user-filter-btn">
+                {user.firstname}
+              </Radio.Button>
+            ))}
+          </Radio.Group>
+        </div>
         <div className="board-container">
           <div className="board-main">
             <DragDropContext onDragEnd={onDragEnd}>
               {columnOrder.map((columnId: string) => {
                 const column = columns[columnId as keyof typeof columns];
-                const tasks = (board?.tasks || []).filter(
-                  (task: TaskType) => task?.identifier && column.taskIds.includes(task.identifier)
-                );
+                const tasks: TaskType[] = [];
+                column.taskIds.forEach((taskId) => {
+                  const task = filteredTasks.find((task) => task.identifier === taskId);
+                  if (task) {
+                    tasks.push(task);
+                  }
+                });
 
                 return <Column key={column.id} column={column} tasks={tasks} />;
               })}
             </DragDropContext>
           </div>
           <div className="board-side-toolbar">
+            <AutoComplete
+              placeholder="Wyszukaj"
+              className="action-btn"
+              options={allTasks.map((task) => ({ value: task.taskNumber, label: task.taskNumber }))}
+              filterOption={(inputValue, option) => option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+              onSelect={(value: string) => {
+                setSearchValue(value);
+                dispatch(searchPhrase(value));
+              }}
+              onClear={() => {
+                setSearchValue("");
+                dispatch(searchPhrase(""));
+              }}
+              allowClear
+            />
             {isOwner && (
               <Button type="primary" size="large" onClick={openEditBoardModal} className="action-btn">
                 Edit board

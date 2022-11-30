@@ -24,8 +24,9 @@ export const MyRoutes: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!loggedUser && localStorage.getItem("userId")) {
-      getUser(localStorage.getItem("userId"), (user) => {
+    const userId = localStorage.getItem("userId");
+    if (!loggedUser && userId) {
+      getUser(userId, (user) => {
         dispatch(logIn(user));
       });
       getBoards();

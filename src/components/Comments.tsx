@@ -26,7 +26,7 @@ const Comments = ({ taskId, onAdd, comments }: CommentsPropsType) => {
   };
 
   const addComment = () => {
-    const commentData: CommentType = { content: newComment };
+    const commentData: Pick<CommentType, "content"> = { content: newComment };
     createComment(taskId, commentData, () => {
       onAdd();
       setAddMode(false);
@@ -46,7 +46,7 @@ const Comments = ({ taskId, onAdd, comments }: CommentsPropsType) => {
   };
 
   const handleEditComment = (commentId: string, content: string) => {
-    const commentData = {
+    const commentData: Pick<CommentType, "content"> = {
       content,
     };
     updateComment(commentId, commentData, () => {

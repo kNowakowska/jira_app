@@ -44,3 +44,22 @@
     justify-content: flex-end;
     flex-direction: column;
 }
+
+.ant-select-clear {
+    background: transparent
+}
+
+.users-filters-sections {
+    width: 100%;
+    display: flex;
+    direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.user-filter-btn {
+    margin-right: 15px;
+}
