@@ -18,7 +18,7 @@ const LogTimeModal = ({ open, onOk, onCancel, loggedTime }: LogTimeModalPropsTyp
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => setTime(parseInt(e.target.value));
 
   return (
-    <Modal title="Zaloguj czas" open={open} onOk={() => onOk(time)} onCancel={onCancel}>
+    <Modal title="Zaloguj czas" open={open} onOk={() => onOk(time)} onCancel={onCancel} cancelText="Anuluj">
       <Input value={time} onChange={handleTimeChange} type="number" />
     </Modal>
   );
