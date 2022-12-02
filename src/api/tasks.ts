@@ -39,7 +39,6 @@ export const createTask = (boardId: string, taskData: Partial<TaskType>, success
   axiosInstance
     .post(`/boards/${boardId}/tasks`, taskData)
     .then((response) => {
-      //TODO: sprawdzić działanie store
       store.dispatch(addTask(response.data));
       if (response.data) successCallback(response.data?.identifier);
       success("Task creation success", "New task created successfully.");
@@ -55,7 +54,6 @@ export const updateTask = (taskData: Partial<TaskType>, successCallback: (task: 
     .patch<TaskType>(`/tasks/${taskData.identifier}`, taskData)
     .then((response) => {
       store.dispatch(editTask(response.data));
-      //TODO: sprawdzić działanie store
       successCallback(response.data);
       success("Task update success", "Your changed task data successfully.");
     })
@@ -70,7 +68,6 @@ export const deleteTask = (taskId: string, successCallback: () => void) => {
     .delete<TaskType>(`/tasks/${taskId}`)
     .then(() => {
       store.dispatch(removeTask(taskId));
-      //TODO: sprawdzić działanie store
       successCallback();
       success("Task deletion", "Task deleted successfully.");
     })

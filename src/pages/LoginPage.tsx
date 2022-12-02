@@ -66,7 +66,6 @@ const LoginPage: React.FC = () => {
             name="password"
             rules={[{ required: true, message: "Please input your password!" }]}
             validateStatus={errorMsg ? "error" : ""}
-            help={errorMsg || ""}
           >
             <Input.Password className="login-input" value={password} onChange={(e) => setPassword(e.target.value)} />
           </Form.Item>

@@ -51,12 +51,12 @@ export const createBoard = (boardData: Partial<BoardType>, successCallback: (boa
     });
 };
 
-export const updateBoard = (boardData: Partial<BoardType>, successCallback: () => void) => {
+export const updateBoard = (boardData: Partial<BoardType>, successCallback: (board: BoardType) => void) => {
   axiosInstance
     .put<BoardType>(`/boards/${boardData.identifier}`, boardData)
     .then((response) => {
       store.dispatch(editBoard(response.data));
-      successCallback();
+      successCallback(response.data);
       success("Board update success", "Your changed board data successfully.");
     })
     .catch((err) => {

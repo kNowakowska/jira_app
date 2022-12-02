@@ -9,13 +9,18 @@ import { receiveUsers, editUser } from "../redux/usersSlice";
 import { clearBoards } from "../redux/boardsSlice";
 import { UserType } from "../types";
 
-export const getUser = (userId: string, successCallback: (user: UserType) => void = () => null) => {
+export const getUser = (
+  userId: string,
+  successCallback: (user: UserType) => void = () => null,
+  errorCallback: () => void = () => null
+) => {
   axiosInstance
     .get<UserType>(`/users/${userId}`)
     .then((response) => {
       successCallback(response.data);
     })
     .catch((err) => {
+      errorCallback();
       console.error(err.message);
       error("Couldn't get user", err.response.data.message);
     });

@@ -64,7 +64,6 @@ const Comments = ({ taskId, onAdd, comments }: CommentsPropsType) => {
           onChange={handleCommentContentChange}
           onCancel={closeAddMode}
           onSubmit={addComment}
-          editMode
         />
       ) : (
         <div className="add-comment-section">

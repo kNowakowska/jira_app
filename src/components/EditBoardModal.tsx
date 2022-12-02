@@ -27,7 +27,7 @@ const EditBoardModal = ({ open, onOk, onCancel, boardName }: EditBoardModalProps
       open={open}
       onOk={editBoard}
       onCancel={onCancel}
-      okButtonProps={{ disabled: nameValue === boardName }}
+      okButtonProps={{ disabled: nameValue === boardName || !nameValue }}
     >
       <Form
         name="basic"

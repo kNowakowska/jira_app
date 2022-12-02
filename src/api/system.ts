@@ -5,7 +5,7 @@ import error from "../components/ErrorDialog";
 
 import { logIn as logInAction, logOut as logOutAction } from "../redux/systemSlice";
 import { clearBoards } from "../redux/boardsSlice";
-import { getUser } from "./users";
+import { getUser, getUsers } from "./users";
 import { getBoards } from "./boards";
 import { LoginRequestType, LoginResponseType, LogoutResponseType } from "../types";
 
@@ -20,6 +20,7 @@ export const logIn = (loginData: LoginRequestType, successCallback: () => void, 
         store.dispatch(logInAction(user));
       });
       getBoards();
+      getUsers();
       successCallback();
     })
     .catch((err) => {
