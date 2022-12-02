@@ -5,13 +5,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Layout, Space, Typography, Input, Button, Form, Select, Divider } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 
 import { TaskType, ColumnType } from "../types";
 import ConfirmModal from "../components/ConfirmModal";
-import { getTask, createTask, updateTask, deleteTask } from "../api/tasks";
+import { getTask, createTask, updateTask, deleteTask, logTime, deleteAssignedUser } from "../api/tasks";
 import { useAppSelector } from "../redux/hooks";
 import { TASK_PRIORITY_MAP } from "../constants";
 import Comments from "../components/Comments";
+import LogTimeModal from "../components/LogTimeModal";
+import { getBoard } from "../api/boards";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -30,6 +33,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const [task, setTask] = useState<null | TaskType>(null);
   const [editMode, setEditMode] = useState(create);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [logTimeModalOpen, setLogTimeModalOpen] = useState(false);
 
   const [taskMainForm] = Form.useForm<{ title: string; description: string }>();
   const [taskExtraForm] = Form.useForm<{ assignee: string }>();
@@ -39,6 +43,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const priorityValue = Form.useWatch("priority", taskExtraForm);
 
   useEffect(() => {
+    getBoard(state.boardId);
     if (!create && id) {
       getTask(id, (task) => {
         setTask(task);
@@ -112,6 +117,29 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const onCommentAdd = () => {
     if (id)
       getTask(id, (task) => {
+        setTask(task);
+      });
+  };
+
+  const openLogTimeModal = () => {
+    setLogTimeModalOpen(true);
+  };
+
+  const closeLogTime = () => {
+    setLogTimeModalOpen(false);
+  };
+
+  const handleLogTime = (value: number) => {
+    if (task?.identifier)
+      logTime(task?.identifier, value, (task) => {
+        setTask(task);
+        setLogTimeModalOpen(false);
+      });
+  };
+
+  const clearUser = () => {
+    if (task?.identifier)
+      deleteAssignedUser(task?.identifier, (task) => {
         setTask(task);
       });
   };
@@ -199,24 +227,28 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                   <Input className="login-input" disabled />
                 </Form.Item>
               )}
-              <Form.Item
-                label="Assignee"
-                name="assignee"
-                initialValue={task?.assignedUser ? `${task?.assignedUser.firstname} ${task?.assignedUser.surname}` : ""}
-              >
-                <Select
-                  showSearch
-                  placeholder="Wybierz osobę"
-                  optionFilterProp="children"
-                  disabled={!editMode}
-                  className="select"
-                  filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
-                  options={[...(board?.contributors || []), board?.owner].map((user) => ({
-                    value: user?.identifier,
-                    label: `${user?.firstname} ${user?.surname}`,
-                  }))}
-                />
-              </Form.Item>
+              <div className="select-container">
+                <Form.Item
+                  label="Assignee"
+                  name="assignee"
+                  initialValue={task?.assignedUser ? `${task?.assignedUser.firstname} ${task?.assignedUser.surname}` : ""}
+                  className={editMode ? "select-edit" : "select-edit-closed"}
+                >
+                  <Select
+                    showSearch
+                    placeholder="Wybierz osobę"
+                    optionFilterProp="children"
+                    disabled={!editMode}
+                    className="select"
+                    filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+                    options={[...(board?.contributors || []), board?.owner].map((user) => ({
+                      value: user?.identifier,
+                      label: `${user?.firstname} ${user?.surname}`,
+                    }))}
+                  />
+                </Form.Item>
+                {editMode && <Button onClick={clearUser} icon={<CloseOutlined />} type="primary" />}
+              </div>
               <Form.Item label="Priority" name="priority" initialValue={task?.taskPriority || "LOWEST"}>
                 <Select
                   showSearch
@@ -227,7 +259,17 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                   disabled={!editMode}
                 />
               </Form.Item>
+              {!create && (
+                <Form.Item label="Logged time" name="loggedTime" initialValue={task?.loggedTime || 0}>
+                  <Input className="login-input" disabled />
+                </Form.Item>
+              )}
             </Form>
+            {task?.assignedUser?.identifier === localStorage.getItem("userId") && (
+              <Button onClick={openLogTimeModal} className="log-time-btn" type="primary">
+                Zaloguj czas
+              </Button>
+            )}
             <div className="task-tools">
               {editMode ? (
                 <>
@@ -258,6 +300,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
           title="Delete task"
           description="This action is permament. Are you sure you want to delete this task?"
         />
+        <LogTimeModal open={logTimeModalOpen} loggedTime={task?.loggedTime || 0} onOk={handleLogTime} onCancel={closeLogTime} />
       </Layout.Content>
     </Layout>
   );

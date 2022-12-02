@@ -1,4 +1,4 @@
-import axiosInstance from "../axios";
+import axiosInstance from "../axios/axios";
 import { store } from "../redux/store";
 
 import error from "../components/ErrorDialog";

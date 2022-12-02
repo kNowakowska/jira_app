@@ -49,36 +49,20 @@ export const taskSlice = createSlice({
         task.identifier !== action.payload.identifier ? task : action.payload
       );
     },
-    addComment: (state, action) => {
-      console.log(state, action);
-    },
-    editComment: (state, action) => {
-      console.log(state, action);
-    },
-    removeComment: (state, action) => {
-      console.log(state, action);
-    },
     searchPhrase: (state, action) => {
       state.search = action.payload;
     },
     filterUser: (state, action) => {
       state.assignedUserIdentifier = action.payload;
     },
+    setBoard: (state, action) => {
+      state.board = action.payload;
+    },
   },
 });
 
-export const {
-  receiveTasks,
-  clearTasks,
-  removeTask,
-  addTask,
-  editTask,
-  addComment,
-  editComment,
-  removeComment,
-  searchPhrase,
-  filterUser,
-} = taskSlice.actions;
+export const { receiveTasks, clearTasks, removeTask, addTask, editTask, searchPhrase, filterUser, setBoard } =
+  taskSlice.actions;
 
 export const getTasks = (state: RootState) => state.tasks.tasks;
 export const getBoard = (state: RootState) => state.tasks.board;

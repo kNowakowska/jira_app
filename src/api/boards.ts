@@ -1,4 +1,4 @@
-import axiosInstance from "../axios";
+import axiosInstance from "../axios/axios";
 import { store } from "../redux/store";
 
 import error from "../components/ErrorDialog";
@@ -6,12 +6,14 @@ import success from "../components/SuccessDialog";
 
 import { BoardType } from "../types";
 import { receiveAllBoards, removeBoard, addBoard, editBoard } from "../redux/boardsSlice";
+import { setBoard } from "../redux/tasksSlice";
 
 export const getBoard = (boardId: string, successCallback: (board: BoardType) => void = () => null) => {
   axiosInstance
     .get<BoardType>(`/boards/${boardId}`)
     .then((response) => {
       successCallback(response.data);
+      store.dispatch(setBoard(response.data));
     })
     .catch((err) => {
       console.error(err.message);

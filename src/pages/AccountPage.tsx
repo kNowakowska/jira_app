@@ -36,7 +36,6 @@ const AccountPage: React.FC = () => {
       email: emailValue,
     };
     if (passwordValue) userData["password" as keyof typeof userData] = passwordValue;
-    //TODO: przetestować bo brak identifier i danych użytkownika
     updateUser(userData, closeEditMode, cancelSave);
   };
 
@@ -62,7 +61,6 @@ const AccountPage: React.FC = () => {
   };
 
   const handleDeleteUser = () => {
-    //TODO: przetestowac bo brak identifier'a
     deleteUser(loggedUser?.identifier, goHome);
   };
 

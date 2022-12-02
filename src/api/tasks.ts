@@ -1,4 +1,4 @@
-import axiosInstance from "../axios";
+import axiosInstance from "../axios/axios";
 import { store } from "../redux/store";
 
 import error from "../components/ErrorDialog";
@@ -89,7 +89,6 @@ export const changeTaskStatus = (
       if (board) {
         getTasks(board, successCallback);
       }
-      //TODO: sprawdzić działanie store
     })
     .catch((err) => {
       console.error(err.message);
@@ -108,9 +107,30 @@ export const changeTaskOrder = (
       if (board) {
         getTasks(board, successCallback);
       }
-      //TODO: sprawdzić działanie store
     })
     .catch((err) => {
       console.error(err.message);
       error("Error when changing order of task", err.response.data.message);
+    });
+
+export const logTime = (taskId: string, value: number, successCallback: (task: TaskType) => void) =>
+  axiosInstance
+    .put(`/tasks/${taskId}/log-time`, { loggedTime: value })
+    .then((response) => {
+      successCallback(response.data);
+    })
+    .catch((err) => {
+      console.error(err.message);
+      error("Error when logging time of the task", err.response.data.message);
+    });
+
+export const deleteAssignedUser = (taskId: string, successCallback: (task: TaskType) => void) =>
+  axiosInstance
+    .delete(`/tasks/${taskId}/assigned-user`)
+    .then((response) => {
+      successCallback(response.data);
+    })
+    .catch((err) => {
+      console.error(err.message);
+      error("Error when deleting assigned user", err.response.data.message);
     });
