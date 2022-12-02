@@ -48,7 +48,7 @@ const AssignedUsersModal = ({
   };
 
   return (
-    <Modal title="Przypisani użytkownicy" open={open} onOk={onOk} onCancel={onClose} cancelText="Anuluj">
+    <Modal title="Przypisani użytkownicy" open={open} onOk={onOk} onCancel={onClose}>
       {isOwner && (
         <Row style={{ marginBottom: "10px" }}>
           <Col span={18}>
