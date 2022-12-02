@@ -9,7 +9,7 @@ type ConfirmModalPropsType = {
 };
 const ConfirmModal = ({ open, onOk, onCancel, title, description }: ConfirmModalPropsType) => {
   return (
-    <Modal title={title} open={open} onOk={onOk} onCancel={onCancel} cancelText="Anuluj">
+    <Modal title={title} open={open} onOk={onOk} onCancel={onCancel}>
       <p>{description}</p>
     </Modal>
   );

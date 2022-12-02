@@ -264,7 +264,7 @@ const BoardPage: React.FC = () => {
               </Button>
             )}
             <Button type="primary" size="large" onClick={openUsersModal} className="action-btn">
-              Użytkownicy
+              Przypisani użytkownicy
             </Button>
             <Button type="primary" size="large" onClick={goToCreateTaskPage} className="action-btn">
               Dodaj zadanie
