@@ -43,26 +43,26 @@ const CustomDrawer: React.FC<DrawerProps & CustomDrawerType> = ({ onClose, open 
   };
 
   const items: MenuItem[] = [
-    getItem(<Link to="/">Home</Link>, "home", <HomeOutlined />),
-    getItem("Your boards", "boards", <TableOutlined />, [
+    getItem(<Link to="/">Strona główna</Link>, "home", <HomeOutlined />),
+    getItem("Twoje tablice", "boards", <TableOutlined />, [
       getItem(
-        "Contributed",
+        "Współtworzone",
         "g1",
         null,
         contributed?.map((board) => getItem(<Link to={`/boards/${board.identifier}`}>{board.name}</Link>, board.identifier)),
         "group"
       ),
       getItem(
-        "Owned",
+        "Utworzone",
         "g2",
         null,
         owned?.map((board) => getItem(<Link to={`/boards/${board.identifier}`}>{board.name}</Link>, board.identifier)),
         "group"
       ),
     ]),
-    getItem(<Link to="/new_board">Create new board</Link>, "create_board", <FormOutlined />),
-    getItem(<Link to={`/profile/${loggedUser?.identifier}`}>My account</Link>, "profile", <UserOutlined />),
-    getItem("Log out", "log_out", <LogoutOutlined />),
+    getItem(<Link to="/new_board">Utwórz nową tablicę</Link>, "create_board", <FormOutlined />),
+    getItem(<Link to={`/profile/${loggedUser?.identifier}`}>Moje konto</Link>, "profile", <UserOutlined />),
+    getItem("Wyloguj się", "log_out", <LogoutOutlined />),
   ];
 
   const onClick: MenuProps["onClick"] = ({ key }) => {

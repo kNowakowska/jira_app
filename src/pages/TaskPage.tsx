@@ -149,7 +149,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
       <Layout.Content className="task-content">
         <Space className="task-header">
           <Button onClick={goToBoard} type="primary" className="btn-margin" size="large" disabled={!create && editMode}>
-            Go back to board
+            Wróć do tablicy
           </Button>
           <Title level={3} className="page-title">
             {task?.title || ""}
@@ -167,17 +167,17 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
               form={taskMainForm}
             >
               <Form.Item
-                label="Task title"
+                label="Tytuł zadania"
                 name="title"
-                rules={[{ required: true, message: "Please input task title!" }]}
+                rules={[{ required: true, message: "Tytuł zadania jest wymagany!" }]}
                 initialValue={task?.title || ""}
               >
                 <Input className="login-input" disabled={!editMode} />
               </Form.Item>
               <Form.Item
-                label="Task description"
+                label="Opis zadania"
                 name="description"
-                rules={[{ required: true, message: "Please input task description!" }]}
+                rules={[{ required: true, message: "Opis zadania jest wymagany!" }]}
                 initialValue={task?.description || ""}
               >
                 <TextArea className="login-input" disabled={!editMode} rows={5} />
@@ -204,18 +204,13 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
               form={taskExtraForm}
             >
               {!create && (
-                <Form.Item
-                  label="Task number"
-                  name="number"
-                  rules={[{ required: true, message: "Please input task number!" }]}
-                  initialValue={task?.taskNumber || ""}
-                >
+                <Form.Item label="Numer zadania" name="number" initialValue={task?.taskNumber || ""}>
                   <Input className="login-input" disabled />
                 </Form.Item>
               )}
               {!create && (
                 <Form.Item
-                  label="Reporter"
+                  label="Zgłaszający"
                   name="reporter"
                   initialValue={task?.reporter ? `${task?.reporter.firstname} ${task?.reporter.surname}` : ""}
                 >
@@ -223,13 +218,13 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 </Form.Item>
               )}
               {!create && (
-                <Form.Item label="Creation date" name="creationDate" initialValue={task?.creationDate}>
+                <Form.Item label="Data utworzenia" name="creationDate" initialValue={task?.creationDate}>
                   <Input className="login-input" disabled />
                 </Form.Item>
               )}
               <div className="select-container">
                 <Form.Item
-                  label="Assignee"
+                  label="Użytkownik"
                   name="assignee"
                   initialValue={task?.assignedUser ? `${task?.assignedUser.firstname} ${task?.assignedUser.surname}` : ""}
                   className={editMode ? "select-edit" : "select-edit-closed"}
@@ -260,7 +255,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 />
               </Form.Item>
               {!create && (
-                <Form.Item label="Logged time" name="loggedTime" initialValue={task?.loggedTime || 0}>
+                <Form.Item label="Zalogowany czas" name="loggedTime" initialValue={task?.loggedTime || 0}>
                   <Input className="login-input" disabled />
                 </Form.Item>
               )}
@@ -274,19 +269,19 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
               {editMode ? (
                 <>
                   <Button onClick={cancelSave} className="btn-margin" size="large">
-                    Cancel
+                    Anuluj
                   </Button>
                   <Button onClick={saveTask} type="primary" className="btn-margin" size="large" disabled={!canSave}>
-                    Save
+                    Zapisz
                   </Button>
                 </>
               ) : (
                 <>
                   <Button onClick={openConfirmationModal} className="btn-margin" size="large">
-                    Delete
+                    Usuń
                   </Button>
                   <Button onClick={openEditMode} type="primary" className="btn-margin" size="large">
-                    Edit
+                    Edytuj
                   </Button>
                 </>
               )}
@@ -297,8 +292,8 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
           open={confirmModalOpen}
           onOk={handleDeleteTask}
           onCancel={cancelDeleteTask}
-          title="Delete task"
-          description="This action is permament. Are you sure you want to delete this task?"
+          title="Usuń zadanie"
+          description="Ta akcja jest nieodwracalna. Czy na pewno chcesz usunąć to zadanie?"
         />
         <LogTimeModal open={logTimeModalOpen} loggedTime={task?.loggedTime || 0} onOk={handleLogTime} onCancel={closeLogTime} />
       </Layout.Content>

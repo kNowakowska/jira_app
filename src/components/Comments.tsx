@@ -67,7 +67,7 @@ const Comments = ({ taskId, onAdd, comments }: CommentsPropsType) => {
         />
       ) : (
         <div className="add-comment-section">
-          <Tooltip title="Add comment" placement="bottom">
+          <Tooltip title="Dodaj komentarz" placement="bottom">
             <Button shape="circle" icon={<PlusCircleTwoTone onClick={openAddMode} />} className="add-comment-btn" />
           </Tooltip>
         </div>

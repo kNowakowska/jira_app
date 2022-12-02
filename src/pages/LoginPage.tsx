@@ -55,16 +55,16 @@ const LoginPage: React.FC = () => {
           <Form.Item
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
+            rules={[{ required: true, message: "Email jest wymagany!" }]}
             validateStatus={errorMsg ? "error" : ""}
           >
             <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </Form.Item>
 
           <Form.Item
-            label="Password"
+            label="Hasło"
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            rules={[{ required: true, message: "Hasło jest wymagane!" }]}
             validateStatus={errorMsg ? "error" : ""}
           >
             <Input.Password className="login-input" value={password} onChange={(e) => setPassword(e.target.value)} />
@@ -72,10 +72,10 @@ const LoginPage: React.FC = () => {
 
           <Form.Item wrapperCol={{ offset: 6, span: 16 }} style={{ marginTop: "50px" }}>
             <Button htmlType="button" onClick={cancelLogin} size="large" className="btn-margin cancel-btn">
-              Cancel
+              Anuluj
             </Button>
             <Button type="primary" htmlType="submit" size="large" className="btn-margin">
-              Sign In
+              Zaloguj się
             </Button>
           </Form.Item>
         </Form>

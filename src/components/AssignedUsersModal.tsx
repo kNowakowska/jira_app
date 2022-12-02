@@ -48,7 +48,7 @@ const AssignedUsersModal = ({
   };
 
   return (
-    <Modal title={"Assigned users"} open={open} onOk={onOk} onCancel={onClose}>
+    <Modal title="Przypisani użytkownicy" open={open} onOk={onOk} onCancel={onClose}>
       {isOwner && (
         <Row style={{ marginBottom: "10px" }}>
           <Col span={18}>
@@ -67,7 +67,7 @@ const AssignedUsersModal = ({
                 .map((user) => ({ value: user.identifier, label: `${user.firstname} ${user.surname}` }))}
               style={{ width: "100%" }}
               value={selectedUser}
-              onChange={(value) => setSelectedUser(value)}
+              onChange={setSelectedUser}
             />
           </Col>
           <Col span={4} offset={2}>

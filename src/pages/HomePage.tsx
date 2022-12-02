@@ -21,7 +21,7 @@ const HomePage: React.FC = () => {
     <Layout>
       <Layout.Content className="home-content">
         <Title level={4} className="home-title">
-          Owned boards
+          Utworzone tablice
         </Title>
         <div className="home-boards-list-area">
           {(owned || []).length ? (
@@ -31,13 +31,13 @@ const HomePage: React.FC = () => {
               </Button>
             ))
           ) : (
-            <Text disabled>No owned boards</Text>
+            <Text disabled>Brak utworzonych tablic</Text>
           )}
         </div>
       </Layout.Content>
       <Layout.Content className="home-content">
         <Title level={4} className="home-title">
-          Contributed boards
+          Współtworzone tablice
         </Title>
         <div className="home-boards-list-area">
           {(contributed || []).length ? (
@@ -47,7 +47,7 @@ const HomePage: React.FC = () => {
               </Button>
             ))
           ) : (
-            <Text disabled>No contributed boards</Text>
+            <Text disabled>Brak współtworzonych tablic</Text>
           )}
         </div>
       </Layout.Content>

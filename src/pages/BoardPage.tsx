@@ -255,19 +255,19 @@ const BoardPage: React.FC = () => {
             />
             {isOwner && (
               <Button type="primary" size="large" onClick={openEditBoardModal} className="action-btn">
-                Edit board
+                Edytuj tablicę
               </Button>
             )}
             {isOwner && (
               <Button size="large" onClick={openConfirmationModal} className="action-btn">
-                Delete board
+                Usuń tablicę
               </Button>
             )}
             <Button type="primary" size="large" onClick={openUsersModal} className="action-btn">
-              Assigned users
+              Przypisani użytkownicy
             </Button>
             <Button type="primary" size="large" onClick={goToCreateTaskPage} className="action-btn">
-              Add task
+              Dodaj zadanie
             </Button>
           </div>
         </div>
@@ -276,8 +276,8 @@ const BoardPage: React.FC = () => {
         open={confirmModalOpen}
         onOk={removeBoard}
         onCancel={cancelDeleteBoard}
-        title="Delete board"
-        description="This action is permament. Are you sure you want to delete this board?"
+        title="Usuń tablicę"
+        description="Ta akcja jest nieodwracalna. Czy na pewno chcesz usunąć tą tablicę?"
       />
       <EditBoardModal open={editBoard} onOk={editBoardHandler} onCancel={closeEditBoardModal} boardName={board?.name || ""} />
       <AssignedUsersModal

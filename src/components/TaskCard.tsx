@@ -27,7 +27,7 @@ const TaskCard: React.FC<TaskPropsType> = ({ task, index }: TaskPropsType) => {
 
   const cardTitle = () => {
     return (
-      <Tooltip title="Open task" placement="bottom">
+      <Tooltip title="Otwórz zadanie" placement="bottom">
         <Link to={`/tasks/${task.identifier}`} state={{ boardId: boardId }}>
           {task.title}
         </Link>

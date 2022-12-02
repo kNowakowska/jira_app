@@ -85,8 +85,8 @@ const CommentItem = ({ comment, onEdit, onDelete }: CommentItemPropsType) => {
           open={confirmationModalOpen}
           onOk={handleDeleteComment}
           onCancel={handleCancelCommentDeletion}
-          title="Delete comment"
-          description="This action is permament. Are you sure you want to delete your comment?"
+          title="Usuń komentarz"
+          description="Ta operacja jest nieodwracalna. Czy na pewno chcesz usunąć swój komentarz?"
         />
       )}
     </>
