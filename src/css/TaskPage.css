@@ -61,6 +61,20 @@
     align-items: center;
 }
 
+.select-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.select-edit {
+    width: 80% !important;
+}
+
+.select-edit-closed {
+    width: 100% !important
+}
+
 .select {
     background-color: #bae7ff;
 }
@@ -82,4 +96,9 @@
     color: whitesmoke;
     text-align: center;
     margin-bottom: 20px
+}
+
+.log-time-btn {
+    width: 100%;
+    margin-bottom: 10px
 }

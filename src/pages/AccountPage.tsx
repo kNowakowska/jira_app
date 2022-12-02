@@ -36,7 +36,6 @@ const AccountPage: React.FC = () => {
       email: emailValue,
     };
     if (passwordValue) userData["password" as keyof typeof userData] = passwordValue;
-    //TODO: przetestować bo brak identifier i danych użytkownika
     updateUser(userData, closeEditMode, cancelSave);
   };
 
@@ -62,7 +61,6 @@ const AccountPage: React.FC = () => {
   };
 
   const handleDeleteUser = () => {
-    //TODO: przetestowac bo brak identifier'a
     deleteUser(loggedUser?.identifier, goHome);
   };
 
@@ -91,20 +89,20 @@ const AccountPage: React.FC = () => {
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item
-                label="Name"
+                label="Imię"
                 name="name"
                 initialValue={loggedUser?.firstname}
-                rules={[{ required: true, message: "Please input your name!" }]}
+                rules={[{ required: true, message: "Imię jest wymagane!" }]}
               >
                 <Input className="login-input" disabled={!editMode} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                label="Last name"
+                label="Nazwisko"
                 name="lastName"
                 initialValue={loggedUser?.surname}
-                rules={[{ required: true, message: "Please input your last name!" }]}
+                rules={[{ required: true, message: "Nazwisko jest wymagane!" }]}
               >
                 <Input className="login-input" disabled={!editMode} />
               </Form.Item>
@@ -115,10 +113,10 @@ const AccountPage: React.FC = () => {
                 name="email"
                 initialValue={loggedUser?.email}
                 rules={[
-                  { required: true, message: "Please input your email!" },
+                  { required: true, message: "Email jest wymagany!" },
                   {
                     type: "email",
-                    message: "The input is not valid E-mail!",
+                    message: "Wprowadzony email nie jest poprawny!",
                   },
                 ]}
               >
@@ -126,24 +124,24 @@ const AccountPage: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Password" name="password" initialValue={""}>
+              <Form.Item label="Hasło" name="password" initialValue={""}>
                 <Input.Password className="login-input" disabled={!editMode} />
               </Form.Item>
             </Col>
 
             <Col span={12}>
               <Form.Item
-                label="Repeat Password"
+                label="Powtórz hasło"
                 name="repeatPassword"
                 initialValue={""}
                 rules={[
                   ({ getFieldValue }) => ({
                     validator(_, value) {
-                      if (!value && getFieldValue("password")) return Promise.reject(new Error("Please repeat your password!"));
+                      if (!value && getFieldValue("password")) return Promise.reject(new Error("Proszę powtórz hasło"));
                       if (!value || getFieldValue("password") === value) {
                         return Promise.resolve();
                       }
-                      return Promise.reject(new Error("The two passwords that you entered do not match!"));
+                      return Promise.reject(new Error("Wprowadzone hasła się różnią!"));
                     },
                   }),
                 ]}
@@ -157,7 +155,7 @@ const AccountPage: React.FC = () => {
             <Row gutter={24}>
               <Col span={12}>
                 <Button htmlType="button" onClick={cancelSave} size="large" className="btn-margin cancel-btn">
-                  Cancel
+                  Anuluj
                 </Button>
               </Col>
               <Col span={12}>
@@ -169,7 +167,7 @@ const AccountPage: React.FC = () => {
                   onClick={saveUser}
                   disabled={!isModified}
                 >
-                  Save
+                  Zapisz
                 </Button>
               </Col>
             </Row>
@@ -177,12 +175,12 @@ const AccountPage: React.FC = () => {
             <Row gutter={24}>
               <Col span={12}>
                 <Button htmlType="button" onClick={openDeleteConfirmModal} size="large" className="btn-margin">
-                  Delete
+                  Usuń
                 </Button>
               </Col>
               <Col span={12}>
                 <Button onClick={openEditMode} type="primary" size="large" className="btn-margin">
-                  Edit
+                  Edytuj
                 </Button>
               </Col>
             </Row>
@@ -192,8 +190,8 @@ const AccountPage: React.FC = () => {
           open={confirmModalOpen}
           onOk={handleDeleteUser}
           onCancel={cancelDeleteUser}
-          title="Delete user"
-          description="This action is permament. Are you sure you want to delete your account?"
+          title="Usuń użytkownika"
+          description="Ta operacja jest nieodwracalna. Czy na pewno chcesz usunąć swoje hasło?"
         />
       </Layout.Content>
     </Layout>

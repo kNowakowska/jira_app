@@ -46,7 +46,7 @@ const CreateBoardPage = () => {
       <Layout.Content className="create-board-content">
         <Space>
           <Title level={3} className="page-title">
-            Create new board
+            Utwórz nową tablicę
           </Title>
         </Space>
         <Form
@@ -61,10 +61,10 @@ const CreateBoardPage = () => {
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item
-                label="Board shortcut"
+                label="Skrót tablicy"
                 name="shortcut"
                 rules={[
-                  { required: true, message: "Please input board shortcut!" },
+                  { required: true, message: "Skrót tablicy jest wymagany!" },
                   { type: "string", max: 3 },
                 ]}
                 initialValue=""
@@ -74,10 +74,10 @@ const CreateBoardPage = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                label="Board name"
+                label="Nazwa tablicy"
                 name="name"
                 initialValue=""
-                rules={[{ required: true, message: "Please input board name!" }]}
+                rules={[{ required: true, message: "Nazwa tablicy jest wymagana!" }]}
               >
                 <Input className="login-input" />
               </Form.Item>
@@ -87,7 +87,7 @@ const CreateBoardPage = () => {
           <Row gutter={24} justify="center" style={{ marginTop: "30px" }}>
             <Col span={4}>
               <Button onClick={openCancelModal} size="large" className="btn-margin">
-                Cancel
+                Anuluj
               </Button>
             </Col>
             <Col span={4}>
@@ -99,7 +99,7 @@ const CreateBoardPage = () => {
                 onClick={addBoard}
                 disabled={!shortcutValue || !nameValue}
               >
-                Create
+                Utwórz
               </Button>
             </Col>
           </Row>
@@ -109,8 +109,8 @@ const CreateBoardPage = () => {
         open={confirmModalOpen}
         onOk={cancelSave}
         onCancel={cancelCancel}
-        title="Cancel creating the board"
-        description="Are you sure you want to cancel? You will lost all input data"
+        title="Anuluj tworzenie tablicy"
+        description="Czy na pewno chcesz anulować? Stracisz wprowadzone dane."
       />
     </Layout>
   );

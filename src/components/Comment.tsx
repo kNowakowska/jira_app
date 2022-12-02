@@ -2,6 +2,7 @@ import "./css/Comment.css";
 
 import { ReactNode, useState } from "react";
 import { CommentType } from "../types";
+import format from "date-fns/format";
 
 import { useAppSelector } from "../redux/hooks";
 
@@ -68,14 +69,14 @@ const CommentItem = ({ comment, onEdit, onDelete }: CommentItemPropsType) => {
           onChange={handleCommentContentChange}
           onCancel={closeEditMode}
           onSubmit={editComment}
+          editMode
         />
       ) : (
         <Comment
           actions={actions}
           author={comment.creator ? `${comment.creator?.firstname} ${comment.creator?.surname}` : ""}
           content={comment.content}
-          // TODO: zmienić format createdDate
-          datetime={<span>{comment.createdDate}</span>}
+          datetime={<span>{format(new Date(comment.createdDate), "dd.MM.yyyy, kk:mm")}</span>}
           className="comment"
         />
       )}
@@ -84,8 +85,8 @@ const CommentItem = ({ comment, onEdit, onDelete }: CommentItemPropsType) => {
           open={confirmationModalOpen}
           onOk={handleDeleteComment}
           onCancel={handleCancelCommentDeletion}
-          title="Delete comment"
-          description="This action is permament. Are you sure you want to delete your comment?"
+          title="Usuń komentarz"
+          description="Ta operacja jest nieodwracalna. Czy na pewno chcesz usunąć swój komentarz?"
         />
       )}
     </>

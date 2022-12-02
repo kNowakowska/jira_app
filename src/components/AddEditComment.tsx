@@ -1,4 +1,5 @@
 import { Button, Input } from "antd";
+import "./css/AddEditComment.css";
 
 type AddEditCommentPropsType = {
   commentValue: string;

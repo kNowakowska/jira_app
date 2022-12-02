@@ -1,7 +1,6 @@
-import axiosInstance from "../axios";
+import axiosInstance from "../axios/axios";
 import { store } from "../redux/store";
 
-import error from "../components/ErrorDialog";
 import success from "../components/SuccessDialog";
 
 import { BoardType, TaskType, ChangeTaskStatusRequestType } from "../types";
@@ -16,68 +15,37 @@ export const getTasks = (board: BoardType, successCallback: (tasks: TaskType[]) 
     .then((response) => {
       store.dispatch(receiveTasks({ board: board, tasks: response.data || [] }));
       successCallback(response.data);
-    })
-    .catch((err) => {
-      console.error(err.message);
-      error("Couldn't get tasks", err.response.data.message);
     });
 };
 
 export const getTask = (taskId: string, successCallback: (task: TaskType) => void = () => null) => {
-  axiosInstance
-    .get<TaskType>(`/tasks/${taskId}`)
-    .then((response) => {
-      successCallback(response.data);
-    })
-    .catch((err) => {
-      console.error(err.message);
-      error("Couldn't get task", err.response.data.message);
-    });
+  axiosInstance.get<TaskType>(`/tasks/${taskId}`).then((response) => {
+    successCallback(response.data);
+  });
 };
 
 export const createTask = (boardId: string, taskData: Partial<TaskType>, successCallback: (taskId: string) => void) => {
-  axiosInstance
-    .post(`/boards/${boardId}/tasks`, taskData)
-    .then((response) => {
-      //TODO: sprawdzić działanie store
-      store.dispatch(addTask(response.data));
-      if (response.data) successCallback(response.data?.identifier);
-      success("Task creation success", "New task created successfully.");
-    })
-    .catch((err) => {
-      console.error(err.message);
-      error("Couldn't create task", err.response.data.message);
-    });
+  axiosInstance.post(`/boards/${boardId}/tasks`, taskData).then((response) => {
+    store.dispatch(addTask(response.data));
+    if (response.data) successCallback(response.data?.identifier);
+    success("Utworzenie zadania", "Utworzenie nowego zadania powiodło się.");
+  });
 };
 
 export const updateTask = (taskData: Partial<TaskType>, successCallback: (task: TaskType) => void) => {
-  axiosInstance
-    .patch<TaskType>(`/tasks/${taskData.identifier}`, taskData)
-    .then((response) => {
-      store.dispatch(editTask(response.data));
-      //TODO: sprawdzić działanie store
-      successCallback(response.data);
-      success("Task update success", "Your changed task data successfully.");
-    })
-    .catch((err) => {
-      console.error(err.message);
-      error("Couldn't update task", err.response.data.message);
-    });
+  axiosInstance.patch<TaskType>(`/tasks/${taskData.identifier}`, taskData).then((response) => {
+    store.dispatch(editTask(response.data));
+    successCallback(response.data);
+    success("Edycja zadania", "Edycja zadania powiodła się.");
+  });
 };
 
 export const deleteTask = (taskId: string, successCallback: () => void) => {
-  axiosInstance
-    .delete<TaskType>(`/tasks/${taskId}`)
-    .then(() => {
-      store.dispatch(removeTask(taskId));
-      //TODO: sprawdzić działanie store
-      successCallback();
-      success("Task deletion", "Task deleted successfully.");
-    })
-    .catch((err) => {
-      console.error(err.message);
-      error("Couldn't delete task", err.response.data.message);
-    });
+  axiosInstance.delete<TaskType>(`/tasks/${taskId}`).then(() => {
+    store.dispatch(removeTask(taskId));
+    successCallback();
+    success("Usunięcie zadania", "Usunięcie zadania powiodło się.");
+  });
 };
 
 export const changeTaskStatus = (
@@ -85,35 +53,33 @@ export const changeTaskStatus = (
   changeStatusData: ChangeTaskStatusRequestType,
   successCallback: (tasks: TaskType[]) => void
 ) =>
-  axiosInstance
-    .put(`/tasks/${taskId}/columns`, changeStatusData)
-    .then(() => {
-      const board = getBoard(store.getState());
-      if (board) {
-        getTasks(board, successCallback);
-      }
-      //TODO: sprawdzić działanie store
-    })
-    .catch((err) => {
-      console.error(err.message);
-      error("Error when changing status of task", err.response.data.message);
-    });
+  axiosInstance.put(`/tasks/${taskId}/columns`, changeStatusData).then(() => {
+    const board = getBoard(store.getState());
+    if (board) {
+      getTasks(board, successCallback);
+    }
+  });
 
 export const changeTaskOrder = (
   taskId: string,
   changeOrderData: ChangeTaskStatusRequestType,
   successCallback: (tasks: TaskType[]) => void
 ) =>
-  axiosInstance
-    .put(`/tasks/${taskId}/order`, changeOrderData)
-    .then(() => {
-      const board = getBoard(store.getState());
-      if (board) {
-        getTasks(board, successCallback);
-      }
-      //TODO: sprawdzić działanie store
-    })
-    .catch((err) => {
-      console.error(err.message);
-      error("Error when changing order of task", err.response.data.message);
-    });
+  axiosInstance.put(`/tasks/${taskId}/order`, changeOrderData).then(() => {
+    const board = getBoard(store.getState());
+    if (board) {
+      getTasks(board, successCallback);
+    }
+  });
+
+export const logTime = (taskId: string, value: number, successCallback: (task: TaskType) => void) =>
+  axiosInstance.put(`/tasks/${taskId}/log-time`, { loggedTime: value }).then((response) => {
+    successCallback(response.data);
+    success("Logowanie czasu", "Logowanie czasu powiodło się.");
+  });
+
+export const deleteAssignedUser = (taskId: string, successCallback: (task: TaskType) => void) =>
+  axiosInstance.delete(`/tasks/${taskId}/assigned-user`).then((response) => {
+    successCallback(response.data);
+    success("Usunięcie przypisanego użytkownika", "Usunięcie przypisanego użytkownika powiodło się.");
+  });

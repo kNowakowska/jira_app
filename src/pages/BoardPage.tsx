@@ -19,7 +19,7 @@ import { COLUMN_TYPE_MAP } from "../constants";
 
 const { Title } = Typography;
 
-export const columnOrder = ["TO_DO", "IN_PROGRESS", "READY_FOR_TESTING", "TESTING", "DONE"];
+export const COLUMN_ORDER = ["TO_DO", "IN_PROGRESS", "READY_FOR_TESTING", "TESTING", "DONE"];
 
 const BoardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -94,6 +94,7 @@ const BoardPage: React.FC = () => {
   };
 
   const openEditBoardModal = () => {
+    clearFilters();
     setEditBoard(true);
   };
 
@@ -107,14 +108,14 @@ const BoardPage: React.FC = () => {
       shortcut: board?.shortcut,
       identifier: board?.identifier,
     };
-    //TODO: przetestować, brak endpointu
-    updateBoard(newBoardData, () => {
+    updateBoard(newBoardData, (updatedBoard) => {
+      setBoard(updatedBoard);
       setEditBoard(false);
-      retrieveBoard();
     });
   };
 
   const openConfirmationModal = () => {
+    clearFilters();
     setConfirmModalOpen(true);
   };
 
@@ -130,6 +131,7 @@ const BoardPage: React.FC = () => {
   };
 
   const openUsersModal = () => {
+    clearFilters();
     setUsersModalOpen(true);
   };
 
@@ -138,7 +140,6 @@ const BoardPage: React.FC = () => {
   };
 
   const retrieveBoard = () => {
-    //TODO: do usunięcia, będzie podmianka w reduxie
     if (id)
       getBoard(id, (board) => {
         getTasks(board, createColumnsObj);
@@ -171,6 +172,7 @@ const BoardPage: React.FC = () => {
   const isOwner = localStorage.getItem("userId") === board?.owner?.identifier;
 
   const goToCreateTaskPage = () => {
+    clearFilters();
     navigate("/tasks/new_task", { state: { boardId: board?.identifier } });
   };
 
@@ -180,6 +182,13 @@ const BoardPage: React.FC = () => {
       setSelectedUser("");
       dispatch(filterUser(""));
     }
+  };
+
+  const clearFilters = () => {
+    setSearchValue("");
+    setSelectedUser("");
+    dispatch(filterUser(""));
+    dispatch(searchPhrase(""));
   };
 
   return (
@@ -200,6 +209,9 @@ const BoardPage: React.FC = () => {
               dispatch(filterUser(e.target.value));
             }}
           >
+            <Radio.Button value={board?.owner.identifier} key={board?.owner.identifier} className="user-filter-btn">
+              {board?.owner.firstname}
+            </Radio.Button>
             {board?.contributors?.map((user) => (
               <Radio.Button value={user.identifier} key={user.identifier} className="user-filter-btn">
                 {user.firstname}
@@ -210,7 +222,7 @@ const BoardPage: React.FC = () => {
         <div className="board-container">
           <div className="board-main">
             <DragDropContext onDragEnd={onDragEnd}>
-              {columnOrder.map((columnId: string) => {
+              {COLUMN_ORDER.map((columnId: string) => {
                 const column = columns[columnId as keyof typeof columns];
                 const tasks: TaskType[] = [];
                 column.taskIds.forEach((taskId) => {
@@ -239,22 +251,23 @@ const BoardPage: React.FC = () => {
                 dispatch(searchPhrase(""));
               }}
               allowClear
+              value={searchValue}
             />
             {isOwner && (
               <Button type="primary" size="large" onClick={openEditBoardModal} className="action-btn">
-                Edit board
+                Edytuj tablicę
               </Button>
             )}
             {isOwner && (
               <Button size="large" onClick={openConfirmationModal} className="action-btn">
-                Delete board
+                Usuń tablicę
               </Button>
             )}
             <Button type="primary" size="large" onClick={openUsersModal} className="action-btn">
-              Assigned users
+              Przypisani użytkownicy
             </Button>
             <Button type="primary" size="large" onClick={goToCreateTaskPage} className="action-btn">
-              Add task
+              Dodaj zadanie
             </Button>
           </div>
         </div>
@@ -263,8 +276,8 @@ const BoardPage: React.FC = () => {
         open={confirmModalOpen}
         onOk={removeBoard}
         onCancel={cancelDeleteBoard}
-        title="Delete board"
-        description="This action is permament. Are you sure you want to delete this board?"
+        title="Usuń tablicę"
+        description="Ta akcja jest nieodwracalna. Czy na pewno chcesz usunąć tą tablicę?"
       />
       <EditBoardModal open={editBoard} onOk={editBoardHandler} onCancel={closeEditBoardModal} boardName={board?.name || ""} />
       <AssignedUsersModal

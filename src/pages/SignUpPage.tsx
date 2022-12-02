@@ -46,39 +46,39 @@ const SignUpPage: React.FC = () => {
             label="Email"
             name="email"
             rules={[
-              { required: true, message: "Please input your email!" },
+              { required: true, message: "Email jest wymagany!" },
               {
                 type: "email",
-                message: "The input is not valid E-mail!",
+                message: "Wprowadzony email nie jest prawidłowy!",
               },
             ]}
           >
             <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </Form.Item>
 
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input your name!" }]}>
+          <Form.Item label="Imię" name="name" rules={[{ required: true, message: "Imię jest wymagane!" }]}>
             <Input className="login-input" value={name} onChange={(e) => setName(e.target.value)} />
           </Form.Item>
 
-          <Form.Item label="Last name" name="lastName" rules={[{ required: true, message: "Please input your last name!" }]}>
+          <Form.Item label="Nazwisko" name="lastName" rules={[{ required: true, message: "Nazwisko jest wymagane!" }]}>
             <Input className="login-input" value={lastName} onChange={(e) => setLastName(e.target.value)} />
           </Form.Item>
 
-          <Form.Item label="Password" name="password" rules={[{ required: true, message: "Please input your password!" }]}>
+          <Form.Item label="Hasło" name="password" rules={[{ required: true, message: "Hasło jest wymagane!" }]}>
             <Input.Password className="login-input" value={password} onChange={(e) => setPassword(e.target.value)} />
           </Form.Item>
 
           <Form.Item
-            label="Repeat Password"
+            label="Powtórz hasło"
             name="repeatPassword"
             rules={[
-              { required: true, message: "Please repeat your password!" },
+              { required: true, message: "Musisz powtórzyć hasło!" },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue("password") === value) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(new Error("The two passwords that you entered do not match!"));
+                  return Promise.reject(new Error("Wprowadzone hasła różnią się!"));
                 },
               }),
             ]}
@@ -93,10 +93,10 @@ const SignUpPage: React.FC = () => {
 
           <Form.Item wrapperCol={{ offset: 6, span: 16 }} style={{ marginTop: "50px" }}>
             <Button htmlType="button" onClick={cancelLogin} size="large" className="btn-margin cancel-btn">
-              Cancel
+              Anuluj
             </Button>
             <Button type="primary" htmlType="submit" size="large" className="btn-margin">
-              Sign Up
+              Załóż konto
             </Button>
           </Form.Item>
         </Form>

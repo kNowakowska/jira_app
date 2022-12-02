@@ -23,11 +23,11 @@ const EditBoardModal = ({ open, onOk, onCancel, boardName }: EditBoardModalProps
 
   return (
     <Modal
-      title={"Edit board"}
+      title="Edytuj tablicę"
       open={open}
       onOk={editBoard}
       onCancel={onCancel}
-      okButtonProps={{ disabled: nameValue === boardName }}
+      okButtonProps={{ disabled: nameValue === boardName || !nameValue }}
     >
       <Form
         name="basic"
@@ -39,9 +39,9 @@ const EditBoardModal = ({ open, onOk, onCancel, boardName }: EditBoardModalProps
         form={form}
       >
         <Form.Item
-          label="Board name"
+          label="Nazwa tablicy"
           name="name"
-          rules={[{ required: true, message: "Please input board name!" }]}
+          rules={[{ required: true, message: "Nazwa tablicy się wymagana!" }]}
           initialValue={boardName}
         >
           <Input className="login-input" />
