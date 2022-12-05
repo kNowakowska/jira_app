@@ -67,6 +67,7 @@ export const MyRoutes: React.FC = () => {
   ) : (
     <Routes>
       <Route path="/" element={<MainPage />} />
+      <Route path="/oauth/callback" element={<MainPage githubLogin />} />
       <Route path="login" element={<Login />} />
       <Route path="sign_up" element={<SignUp />} />
       <Route path="*" element={<NotFound />} />

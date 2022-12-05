@@ -1,11 +1,24 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "../css/MainPage.css";
 import { Layout, Typography, Button } from "antd";
 import { useAppSelector } from "../redux/hooks";
+import { useEffect } from "react";
 
-const MainPage: React.FC = () => {
+type MainPagePropsType = {
+  githubLogin?: boolean;
+};
+
+const MainPage = ({ githubLogin }: MainPagePropsType) => {
   const navigate = useNavigate();
   const githubUrl = useAppSelector((state) => state.system.githubUrl);
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (githubLogin) {
+      console.log("Access Token: ", searchParams.get("accessToken"));
+      console.log("UserIdentifier: ", searchParams.get("userIdentifier"));
+    }
+  }, [githubLogin, searchParams]);
 
   const loginHandler = () => {
     navigate("/login");
@@ -27,7 +40,6 @@ const MainPage: React.FC = () => {
   return (
     <Layout>
       <Layout.Header className="main-page-header-toolbar">
-        \{" "}
         <a href={`http://localhost:8080/${githubUrl}`}>
           <Button type="primary" size="large" className="btn-margin">
             Zaloguj się z GitHub
