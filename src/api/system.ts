@@ -1,7 +1,7 @@
 import axiosInstance from "../axios/axios";
 import { store } from "../redux/store";
 
-import { logIn as logInAction, logOut as logOutAction } from "../redux/systemSlice";
+import { logIn as logInAction, logOut as logOutAction, setGithubUrl } from "../redux/systemSlice";
 import { clearBoards } from "../redux/boardsSlice";
 import { getUser, getUsers } from "./users";
 import { getBoards } from "./boards";
@@ -34,5 +34,11 @@ export const logOut = (userId: string, successCallback: () => void) => {
     store.dispatch(logOutAction());
     store.dispatch(clearBoards());
     successCallback();
+  });
+};
+
+export const getGithubUrl = () => {
+  axiosInstance.get("/auth/oauth/urls").then((response) => {
+    store.dispatch(setGithubUrl(response.data.githubUrl));
   });
 };
