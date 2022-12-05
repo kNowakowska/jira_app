@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import "../css/MainPage.css";
 import { Layout, Typography, Button } from "antd";
+import { useAppSelector } from "../redux/hooks";
 
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
+  const githubUrl = useAppSelector((state) => state.system.githubUrl);
 
   const loginHandler = () => {
     navigate("/login");
@@ -25,6 +27,12 @@ const MainPage: React.FC = () => {
   return (
     <Layout>
       <Layout.Header className="main-page-header-toolbar">
+        \{" "}
+        <a href={`http://localhost:8080/${githubUrl}`}>
+          <Button type="primary" size="large" className="btn-margin">
+            Zaloguj się z GitHub
+          </Button>
+        </a>
         <Button onClick={loginHandler} type="primary" size="large" className="btn-margin">
           Zaloguj się
         </Button>

@@ -16,6 +16,7 @@ import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { logIn } from "../redux/systemSlice";
 import { getUser, getUsers } from "../api/users";
 import { getBoards } from "../api/boards";
+import { getGithubUrl } from "../api/system";
 
 export const MyRoutes: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("token") ? true : false);
@@ -24,13 +25,17 @@ export const MyRoutes: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    getGithubUrl();
+  }, []);
+
+  useEffect(() => {
     const userId = localStorage.getItem("userId");
     if (!loggedUser && userId) {
       getUser(userId, (user) => {
         dispatch(logIn(user));
+        getBoards();
+        getUsers();
       });
-      getBoards();
-      getUsers();
     }
     function checkUserData() {
       if (localStorage.getItem("token")) {
@@ -44,7 +49,7 @@ export const MyRoutes: React.FC = () => {
     return () => {
       window.removeEventListener("storage", checkUserData);
     };
-  }, []);
+  }, [loggedUser]);
 
   return isLoggedIn ? (
     <>
