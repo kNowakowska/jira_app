@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { Route, Routes, useSearchParams } from "react-router-dom";
 
 import Login from "../pages/LoginPage";
 import SignUp from "../pages/SignUpPage";
@@ -22,11 +22,36 @@ export const MyRoutes: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("token") ? true : false);
   const loggedUser = useAppSelector((state) => state.system.user);
 
+  const [searchParams] = useSearchParams();
+
   const dispatch = useAppDispatch();
+
+  const checkUserData = useCallback(() => {
+    if (localStorage.getItem("token")) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   useEffect(() => {
     getGithubUrl();
-  }, []);
+
+    window.addEventListener("storage", checkUserData);
+    return () => {
+      window.removeEventListener("storage", checkUserData);
+    };
+  }, [checkUserData]);
+
+  useEffect(() => {
+    const accessToken = searchParams.get("accessToken");
+    const userId = searchParams.get("userIdentifier");
+    if (accessToken && userId) {
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("userId", userId);
+      window.dispatchEvent(new Event("storage"));
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -37,18 +62,6 @@ export const MyRoutes: React.FC = () => {
         getUsers();
       });
     }
-    function checkUserData() {
-      if (localStorage.getItem("token")) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
-    }
-    window.addEventListener("storage", checkUserData);
-
-    return () => {
-      window.removeEventListener("storage", checkUserData);
-    };
   }, [loggedUser]);
 
   return isLoggedIn ? (

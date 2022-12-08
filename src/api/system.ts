@@ -7,18 +7,23 @@ import { getUser, getUsers } from "./users";
 import { getBoards } from "./boards";
 import { LoginRequestType, LoginResponseType, LogoutResponseType } from "../types";
 
+export const saveLoginData = (accessToken: string, userIdentifier: string) => {
+  localStorage.setItem("token", accessToken);
+  localStorage.setItem("userId", userIdentifier);
+  window.dispatchEvent(new Event("storage"));
+
+  getUser(userIdentifier, (user) => {
+    store.dispatch(logInAction(user));
+    getBoards();
+    getUsers();
+  });
+};
+
 export const logIn = (loginData: LoginRequestType, successCallback: () => void, errorCallback: (errMsg: string) => void) => {
   axiosInstance
     .post<LoginResponseType>("/auth/login", loginData)
     .then((response) => {
-      localStorage.setItem("token", response.data.accessToken);
-      localStorage.setItem("userId", response.data.userIdentifier);
-      window.dispatchEvent(new Event("storage"));
-      getUser(response.data.userIdentifier, (user) => {
-        store.dispatch(logInAction(user));
-      });
-      getBoards();
-      getUsers();
+      saveLoginData(response.data.accessToken, response.data.userIdentifier);
       successCallback();
     })
     .catch((err) => {

@@ -15,8 +15,11 @@ const MainPage = ({ githubLogin }: MainPagePropsType) => {
 
   useEffect(() => {
     if (githubLogin) {
-      console.log("Access Token: ", searchParams.get("accessToken"));
-      console.log("UserIdentifier: ", searchParams.get("userIdentifier"));
+      const accessToken = searchParams.get("accessToken");
+      const userId = searchParams.get("userIdentifier");
+      if (accessToken && userId) {
+        goHome();
+      }
     }
   }, [githubLogin, searchParams]);
 
@@ -26,6 +29,10 @@ const MainPage = ({ githubLogin }: MainPagePropsType) => {
 
   const signUpHandler = () => {
     navigate("/sign_up");
+  };
+
+  const goHome = () => {
+    navigate("/");
   };
 
   // Example usage of Docker env variables
