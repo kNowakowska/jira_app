@@ -77,7 +77,10 @@ const CreateBoardPage = () => {
                 label="Nazwa tablicy"
                 name="name"
                 initialValue=""
-                rules={[{ required: true, message: "Nazwa tablicy jest wymagana!" }]}
+                rules={[
+                  { required: true, message: "Nazwa tablicy jest wymagana!" },
+                  { whitespace: true, message: "Nazwa tablicy jest wymagana!" },
+                ]}
               >
                 <Input className="login-input" />
               </Form.Item>
@@ -97,7 +100,7 @@ const CreateBoardPage = () => {
                 type="primary"
                 htmlType="submit"
                 onClick={addBoard}
-                disabled={!shortcutValue || !nameValue}
+                disabled={!shortcutValue || !nameValue?.trim()}
               >
                 Utwórz
               </Button>

@@ -226,7 +226,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 <Form.Item
                   label="Użytkownik"
                   name="assignee"
-                  initialValue={task?.assignedUser ? `${task?.assignedUser.firstname} ${task?.assignedUser.surname}` : ""}
+                  initialValue={task?.assignedUser ? task.assignedUser.identifier : ""}
                   className={editMode ? "select-edit" : "select-edit-closed"}
                 >
                   <Select
@@ -244,7 +244,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 </Form.Item>
                 {editMode && <Button onClick={clearUser} icon={<CloseOutlined />} type="primary" />}
               </div>
-              <Form.Item label="Priority" name="priority" initialValue={task?.taskPriority || "LOWEST"}>
+              <Form.Item label="Priorytet" name="priority" initialValue={task?.taskPriority || "LOWEST"}>
                 <Select
                   showSearch
                   optionFilterProp="children"

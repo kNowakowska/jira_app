@@ -23,9 +23,8 @@
 }
 
 .task-header .ant-space-item:nth-of-type(2) {
-    width: 85%;
+    width: 75%;
     text-align: center;
-    transform: translateX(-10%);
 }
 
 .task-main-content {
