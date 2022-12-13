@@ -71,7 +71,7 @@ const AssignedUsersModal = ({
             />
           </Col>
           <Col span={4} offset={2}>
-            <Button shape="circle" type="primary" icon={<SaveOutlined />} onClick={addUser} />
+            <Button shape="circle" type="primary" icon={<SaveOutlined />} onClick={addUser} disabled={!selectedUser} />
           </Col>
         </Row>
       )}

@@ -18,9 +18,11 @@ export const ResponseInterceptors = (navigate: NavigateFunction) => {
         navigate("/");
       } else if (new RegExp(/5\d\d/).test(error?.response?.status)) {
         errorAlert("Błąd serwera!", "");
-      } else {
+      } else if (error?.response?.data.reasonCode && error?.response?.data.message) {
         console.error(error.message);
-        errorAlert(error.response.data.reasonCode, error.response.data.message);
+        errorAlert(error?.response?.data.reasonCode, error?.response?.data.message);
+      } else {
+        errorAlert(error.code, error.message);
       }
       return Promise.reject(error);
     }
