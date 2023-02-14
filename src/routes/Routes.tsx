@@ -16,7 +16,6 @@ import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { logIn } from "../redux/systemSlice";
 import { getUser, getUsers } from "../api/users";
 import { getBoards } from "../api/boards";
-import { getGithubUrl } from "../api/system";
 
 export const MyRoutes: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("token") ? true : false);
@@ -35,8 +34,6 @@ export const MyRoutes: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    getGithubUrl();
-
     window.addEventListener("storage", checkUserData);
     return () => {
       window.removeEventListener("storage", checkUserData);
