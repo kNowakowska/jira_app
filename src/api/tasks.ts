@@ -83,3 +83,11 @@ export const deleteAssignedUser = (taskId: string, successCallback: (task: TaskT
     successCallback(response.data);
     success("Usunięcie przypisanego użytkownika", "Usunięcie przypisanego użytkownika powiodło się.");
   });
+
+export const archiveTask = (taskId: string, successCallback: () => void) => {
+  axiosInstance.put<TaskType>(`/tasks/${taskId}/archive`).then(() => {
+    store.dispatch(removeTask(taskId));
+    successCallback();
+    success("Archiwizacja zadania", "Archiwizacja zadania powiodło się.");
+  });
+};
