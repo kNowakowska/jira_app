@@ -9,7 +9,7 @@ import { CloseOutlined } from "@ant-design/icons";
 
 import { TaskType, ColumnType } from "../types";
 import ConfirmModal from "../components/ConfirmModal";
-import { getTask, createTask, updateTask, deleteTask, logTime, deleteAssignedUser } from "../api/tasks";
+import { getTask, createTask, updateTask, deleteTask, logTime, deleteAssignedUser, archiveTask } from "../api/tasks";
 import { useAppSelector } from "../redux/hooks";
 import { TASK_PRIORITY_MAP } from "../constants";
 import Comments from "../components/Comments";
@@ -33,6 +33,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const [task, setTask] = useState<null | TaskType>(null);
   const [editMode, setEditMode] = useState(create);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [confirmArchiveModalOpen, setConfirmArchiveModalOpen] = useState(false);
   const [logTimeModalOpen, setLogTimeModalOpen] = useState(false);
 
   const [taskMainForm] = Form.useForm<{ title: string; description: string }>();
@@ -144,6 +145,23 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
       });
   };
 
+  const openArchiveConfirmationModal = () => {
+    setConfirmArchiveModalOpen(true);
+  };
+
+  const handleArchiveTask = () => {
+    if (task) {
+      setConfirmArchiveModalOpen(false);
+      archiveTask(task.identifier, () => {
+        navigate(`/boards/${state.boardId}`);
+      });
+    }
+  };
+
+  const cancelArchiveTask = () => {
+    setConfirmArchiveModalOpen(false);
+  };
+  
   return (
     <Layout>
       <Layout.Content className="task-content">
@@ -277,10 +295,13 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 </>
               ) : (
                 <>
-                  <Button onClick={openConfirmationModal} className="btn-margin" size="large">
+                  <Button onClick={openArchiveConfirmationModal} size="middle" type="primary">
+                    Archiwizuj
+                  </Button>
+                  <Button onClick={openConfirmationModal} size="middle">
                     Usuń
                   </Button>
-                  <Button onClick={openEditMode} type="primary" className="btn-margin" size="large">
+                  <Button onClick={openEditMode} type="primary" size="middle">
                     Edytuj
                   </Button>
                 </>
@@ -294,6 +315,13 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
           onCancel={cancelDeleteTask}
           title="Usuń zadanie"
           description="Ta akcja jest nieodwracalna. Czy na pewno chcesz usunąć to zadanie?"
+        />
+        <ConfirmModal
+          open={confirmArchiveModalOpen}
+          onOk={handleArchiveTask}
+          onCancel={cancelArchiveTask}
+          title="Archiwizuj zadanie"
+          description="Ta akcja jest nieodwracalna. Czy na pewno chcesz archiwizować to zadanie?"
         />
         <LogTimeModal open={logTimeModalOpen} loggedTime={task?.loggedTime || 0} onOk={handleLogTime} onCancel={closeLogTime} />
       </Layout.Content>
