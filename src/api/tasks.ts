@@ -72,8 +72,8 @@ export const changeTaskOrder = (
     }
   });
 
-export const logTime = (taskId: string, value: number, successCallback: (task: TaskType) => void) =>
-  axiosInstance.put(`/tasks/${taskId}/log-time`, { loggedTime: value }).then((response) => {
+export const logTime = (taskId: string, value: number | string, successCallback: (task: TaskType) => void) =>
+  axiosInstance.put(`/tasks/${taskId}/log-time`, { loggedTime: value || null }).then((response) => {
     successCallback(response.data);
     success("Logowanie czasu", "Logowanie czasu powiodło się.");
   });
