@@ -130,7 +130,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
     setLogTimeModalOpen(false);
   };
 
-  const handleLogTime = (value: number) => {
+  const handleLogTime = (value: number | string) => {
     if (task?.identifier)
       logTime(task?.identifier, value, (task) => {
         setTask(task);
@@ -161,7 +161,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const cancelArchiveTask = () => {
     setConfirmArchiveModalOpen(false);
   };
-  
+
   return (
     <Layout>
       <Layout.Content className="task-content">
@@ -273,14 +273,14 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 />
               </Form.Item>
               {!create && (
-                <Form.Item label="Zalogowany czas" name="loggedTime" initialValue={task?.loggedTime || 0}>
+                <Form.Item label="Wycena" name="loggedTime" initialValue={task?.loggedTime || ""}>
                   <Input className="login-input" disabled />
                 </Form.Item>
               )}
             </Form>
             {task?.assignedUser?.identifier === localStorage.getItem("userId") && (
               <Button onClick={openLogTimeModal} className="log-time-btn" type="primary">
-                Zaloguj czas
+                Zmień wycenę
               </Button>
             )}
             <div className="task-tools">
@@ -323,7 +323,12 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
           title="Archiwizuj zadanie"
           description="Ta akcja jest nieodwracalna. Czy na pewno chcesz archiwizować to zadanie?"
         />
-        <LogTimeModal open={logTimeModalOpen} loggedTime={task?.loggedTime || 0} onOk={handleLogTime} onCancel={closeLogTime} />
+        <LogTimeModal
+          open={logTimeModalOpen}
+          loggedTime={task?.loggedTime || ""}
+          onOk={handleLogTime}
+          onCancel={closeLogTime}
+        />
       </Layout.Content>
     </Layout>
   );
