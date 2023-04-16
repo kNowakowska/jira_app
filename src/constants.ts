@@ -11,3 +11,9 @@ export const TASK_PRIORITY_MAP = {
   MEDIUM: "Średni",
   LOWEST: "Najniższy",
 };
+
+export const TASK_PRIORITY_COLOR_MAP = {
+  HIGHEST: "red",
+  MEDIUM: "gold",
+  LOWEST: "green",
+};

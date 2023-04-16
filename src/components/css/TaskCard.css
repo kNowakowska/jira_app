@@ -16,3 +16,15 @@
 .task-assignee {
     color: #40a9ff;
 }
+
+.ant-card-actions {
+    background-color: transparent;
+}
+
+.ant-card-actions *:hover {
+    cursor: grab
+}
+
+.ant-card-actions>li {
+    margin: 5px
+}
