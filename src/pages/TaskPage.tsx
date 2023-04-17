@@ -9,11 +9,10 @@ import { CloseOutlined } from "@ant-design/icons";
 
 import { TaskType, ColumnType } from "../types";
 import ConfirmModal from "../components/ConfirmModal";
-import { getTask, createTask, updateTask, deleteTask, logTime, deleteAssignedUser, archiveTask } from "../api/tasks";
+import { getTask, createTask, updateTask, deleteTask, deleteAssignedUser, archiveTask } from "../api/tasks";
 import { useAppSelector } from "../redux/hooks";
 import { TASK_PRIORITY_MAP } from "../constants";
 import Comments from "../components/Comments";
-import LogTimeModal from "../components/LogTimeModal";
 import { getBoard } from "../api/boards";
 
 const { Title } = Typography;
@@ -34,7 +33,6 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const [editMode, setEditMode] = useState(create);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [confirmArchiveModalOpen, setConfirmArchiveModalOpen] = useState(false);
-  const [logTimeModalOpen, setLogTimeModalOpen] = useState(false);
 
   const [taskMainForm] = Form.useForm<{ title: string; description: string }>();
   const [taskExtraForm] = Form.useForm<{ assignee: string }>();
@@ -42,6 +40,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const descValue = Form.useWatch("description", taskMainForm);
   const assigneeValue = Form.useWatch("assignee", taskExtraForm);
   const priorityValue = Form.useWatch("priority", taskExtraForm);
+  const loggedTime = Form.useWatch("loggedTime", taskExtraForm);
 
   useEffect(() => {
     getBoard(state.boardId);
@@ -92,6 +91,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
       title: titleValue,
       description: descValue,
       taskPriority: priorityValue,
+      loggedTime: loggedTime,
     };
     if (assigneeValue) taskData["assignedUserIdentifier" as keyof typeof taskData] = assigneeValue;
     if (task?.identifier) {
@@ -119,22 +119,6 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
     if (id)
       getTask(id, (task) => {
         setTask(task);
-      });
-  };
-
-  const openLogTimeModal = () => {
-    setLogTimeModalOpen(true);
-  };
-
-  const closeLogTime = () => {
-    setLogTimeModalOpen(false);
-  };
-
-  const handleLogTime = (value: number | string) => {
-    if (task?.identifier)
-      logTime(task?.identifier, value, (task) => {
-        setTask(task);
-        setLogTimeModalOpen(false);
       });
   };
 
@@ -272,17 +256,10 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                   disabled={!editMode}
                 />
               </Form.Item>
-              {!create && (
-                <Form.Item label="Wycena" name="loggedTime" initialValue={task?.loggedTime || ""}>
-                  <Input className="login-input" disabled />
-                </Form.Item>
-              )}
+              <Form.Item label="Wycena" name="loggedTime" initialValue={task?.loggedTime || ""}>
+                <Input className="login-input" disabled={!editMode} type="number" />
+              </Form.Item>
             </Form>
-            {task?.assignedUser?.identifier === localStorage.getItem("userId") && (
-              <Button onClick={openLogTimeModal} className="log-time-btn" type="primary">
-                Zmień wycenę
-              </Button>
-            )}
             <div className="task-tools">
               {editMode ? (
                 <>
@@ -322,12 +299,6 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
           onCancel={cancelArchiveTask}
           title="Archiwizuj zadanie"
           description="Ta akcja jest nieodwracalna. Czy na pewno chcesz archiwizować to zadanie?"
-        />
-        <LogTimeModal
-          open={logTimeModalOpen}
-          loggedTime={task?.loggedTime || ""}
-          onOk={handleLogTime}
-          onCancel={closeLogTime}
         />
       </Layout.Content>
     </Layout>

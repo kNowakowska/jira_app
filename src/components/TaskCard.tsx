@@ -31,34 +31,33 @@ const TaskCard: React.FC<TaskPropsType> = ({ task, index }: TaskPropsType) => {
   return (
     <Draggable draggableId={task.identifier || ""} index={index}>
       {(provided) => (
-        <Badge.Ribbon
-          text={task.taskPriority}
-          color={TASK_PRIORITY_COLOR_MAP[task.taskPriority as keyof typeof TASK_PRIORITY_COLOR_MAP]}
-        >
-          <Card
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            title={cardTitle()}
-            size="small"
-            className="task-card"
-            actions={[
-              task.assignedUser ? (
-                <Tag
-                  key="assigned-user-tag"
-                  color="#40a9ff"
-                >{`${task.assignedUser.firstname} ${task.assignedUser.surname}`}</Tag>
-              ) : null,
-              task.loggedTime ? (
-                <Tag key="estimation-tag" color="#40a9ff">
-                  {task.loggedTime}
-                </Tag>
-              ) : null,
-            ]}
+        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+          <Badge.Ribbon
+            text={task.taskPriority}
+            color={TASK_PRIORITY_COLOR_MAP[task.taskPriority as keyof typeof TASK_PRIORITY_COLOR_MAP]}
           >
-            {task.description}
-          </Card>
-        </Badge.Ribbon>
+            <Card
+              title={cardTitle()}
+              size="small"
+              className="task-card"
+              actions={[
+                task.assignedUser ? (
+                  <Tag
+                    key="assigned-user-tag"
+                    color="#40a9ff"
+                  >{`${task.assignedUser.firstname} ${task.assignedUser.surname}`}</Tag>
+                ) : null,
+                task.loggedTime ? (
+                  <Tag key="estimation-tag" color="#40a9ff">
+                    {task.loggedTime}
+                  </Tag>
+                ) : null,
+              ]}
+            >
+              {task.description}
+            </Card>
+          </Badge.Ribbon>
+        </div>
       )}
     </Draggable>
   );
