@@ -53,7 +53,7 @@ export type TaskType = {
   creationDate: string;
   boardColumn: ColumnType;
   taskPriority: TaskPriorityType;
-  loggedTime?: 0;
+  loggedTime?: number;
   assignedUser?: UserType;
   reporter: UserType;
   assignedUserIdentifier?: string;
