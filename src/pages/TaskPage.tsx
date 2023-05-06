@@ -127,6 +127,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
       deleteAssignedUser(task?.identifier, (task) => {
         setTask(task);
       });
+    else taskExtraForm.setFieldValue("assignee", "");
   };
 
   const openArchiveConfirmationModal = () => {
