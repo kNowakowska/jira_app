@@ -193,7 +193,14 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
               <Title level={4} className="task-comments-title">
                 KOMENTARZE
               </Title>
-              {task?.identifier && <Comments taskId={task?.identifier} onAdd={onCommentAdd} comments={task?.comments || []} />}
+              {task?.identifier && (
+                <Comments
+                  taskId={task?.identifier}
+                  onAdd={onCommentAdd}
+                  comments={task?.comments || []}
+                  readOnly={task?.isArchived}
+                />
+              )}
             </div>
           </div>
           <div className="task-actions">
@@ -273,15 +280,19 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 </>
               ) : (
                 <>
-                  <Button onClick={openArchiveConfirmationModal} size="middle" type="primary">
-                    Archiwizuj
-                  </Button>
+                  {!task?.isArchived && (
+                    <Button onClick={openArchiveConfirmationModal} size="middle" type="primary">
+                      Archiwizuj
+                    </Button>
+                  )}
                   <Button onClick={openConfirmationModal} size="middle">
                     Usuń
                   </Button>
-                  <Button onClick={openEditMode} type="primary" size="middle">
-                    Edytuj
-                  </Button>
+                  {!task?.isArchived && (
+                    <Button onClick={openEditMode} type="primary" size="middle">
+                      Edytuj
+                    </Button>
+                  )}
                 </>
               )}
             </div>

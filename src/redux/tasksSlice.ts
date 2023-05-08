@@ -9,6 +9,7 @@ interface TasksState {
   search: string;
   assignedUserIdentifier: string;
   filteredTasks: TaskType[];
+  archivedTasks: TaskType[];
 }
 
 const initialState: TasksState = {
@@ -17,6 +18,7 @@ const initialState: TasksState = {
   search: "",
   assignedUserIdentifier: "",
   filteredTasks: [],
+  archivedTasks: [],
 };
 
 export const taskSlice = createSlice({
@@ -57,6 +59,7 @@ export const taskSlice = createSlice({
     },
     setBoard: (state, action) => {
       state.board = action.payload;
+      state.archivedTasks = action.payload.tasks.filter((task: TaskType) => task.isArchived);
     },
   },
 });

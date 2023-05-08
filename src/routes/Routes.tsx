@@ -16,6 +16,7 @@ import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { logIn } from "../redux/systemSlice";
 import { getUser, getUsers } from "../api/users";
 import { getBoards } from "../api/boards";
+import TasksListContainer from "../pages/TasksListContainer";
 
 export const MyRoutes: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("token") ? true : false);
@@ -69,6 +70,7 @@ export const MyRoutes: React.FC = () => {
         <Route path="boards/:id" element={<BoardPage />} />
         <Route path="new_board" element={<CreateBoardPage />} />
         <Route path="profile/:id" element={<AccountPage />} />
+        <Route path="tasks" element={<TasksListContainer />} />
         <Route path="tasks/new_task" element={<TaskPage create />} />
         <Route path="tasks/:id" element={<TaskPage />} />
         <Route path="*" element={<NotFound />} />

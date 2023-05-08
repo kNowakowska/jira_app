@@ -15,9 +15,10 @@ type CommentsPropsType = {
   taskId: string;
   onAdd: () => void;
   comments: CommentType[];
+  readOnly?: boolean;
 };
 
-const Comments = ({ taskId, onAdd, comments }: CommentsPropsType) => {
+const Comments = ({ taskId, onAdd, comments, readOnly = false }: CommentsPropsType) => {
   const [addMode, setAddMode] = useState(false);
   const [newComment, setNewComment] = useState("");
 
@@ -58,20 +59,21 @@ const Comments = ({ taskId, onAdd, comments }: CommentsPropsType) => {
 
   return (
     <>
-      {addMode ? (
-        <AddEditComment
-          commentValue={newComment}
-          onChange={handleCommentContentChange}
-          onCancel={closeAddMode}
-          onSubmit={addComment}
-        />
-      ) : (
-        <div className="add-comment-section">
-          <Tooltip title="Dodaj komentarz" placement="bottom">
-            <Button shape="circle" icon={<PlusCircleTwoTone onClick={openAddMode} />} className="add-comment-btn" />
-          </Tooltip>
-        </div>
-      )}
+      {!readOnly &&
+        (addMode ? (
+          <AddEditComment
+            commentValue={newComment}
+            onChange={handleCommentContentChange}
+            onCancel={closeAddMode}
+            onSubmit={addComment}
+          />
+        ) : (
+          <div className="add-comment-section">
+            <Tooltip title="Dodaj komentarz" placement="bottom">
+              <Button shape="circle" icon={<PlusCircleTwoTone onClick={openAddMode} />} className="add-comment-btn" />
+            </Tooltip>
+          </div>
+        ))}
       {comments.map((comment) => (
         <Comment
           comment={comment}

@@ -59,6 +59,8 @@ export type TaskType = {
   assignedUserIdentifier?: string;
   orderInColumn: number;
   comments: CommentType[];
+  isArchived: boolean;
+  isDeleted: boolean;
 };
 
 export type CommentType = {

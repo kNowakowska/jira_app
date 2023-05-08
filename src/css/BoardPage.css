@@ -30,13 +30,17 @@
 }
 
 .board-side-toolbar {
-    width: 10%;
+    width: 14%;
 }
 
 
 .action-btn {
     width: 100%;
     margin-bottom: 15px
+}
+
+.action-btn.secondary {
+    color: #1890FF;
 }
 
 .edit-board-form {
@@ -62,4 +66,5 @@
 
 .user-filter-btn {
     margin-right: 15px;
+    color: #1890FF;
 }
