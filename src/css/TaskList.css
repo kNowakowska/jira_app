@@ -1,0 +1,57 @@
+.tasks-list-content {
+    background-color: #91d5ff;
+    width: 90vw;
+    min-height: 50vh;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.tasks-list-content .title-container {
+    width: 100%;
+    margin-bottom: 20px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.tasks-list-content .title-container .ant-space-item:nth-of-type(2) {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+
+}
+
+.tasks-list-content .title-container .ant-space-item:nth-of-type(2) h3 {
+    margin-top: 6px;
+}
+
+.tasks-list-content .title-container button {
+    z-index: 5;
+}
+
+.tasks-list-content .page-title {
+    color: #1890FF;
+}
+
+.tasks-list-content .task-item {
+    padding: 5px 20px;
+    border: 1px solid whitesmoke;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.tasks-list-content .task-item h4 a {
+    color: #1890FF;
+}
+
+.tasks-list-content .task-item div {
+    color: #40a9ff;
+}
+
+.ant-list-split .ant-list-item:last-child {
+    border-bottom: 1px solid whitesmoke;
+}
