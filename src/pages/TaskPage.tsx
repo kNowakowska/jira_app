@@ -4,7 +4,7 @@ import { useLocation, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Layout, Space, Typography, Input, Button, Form, Select, Divider } from "antd";
+import { Layout, Space, Typography, Input, Button, Form, Select, Divider, Tooltip } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 
 import { TaskType, ColumnType } from "../types";
@@ -147,6 +147,9 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
     setConfirmArchiveModalOpen(false);
   };
 
+  const canDelete = task && (["TO_DO", "DONE"].includes(task.boardColumn) || task.isArchived);
+  const canArchive = task && task.boardColumn === "DONE" && !task.isArchived;
+
   return (
     <Layout>
       <Layout.Content className="task-content">
@@ -281,13 +284,17 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
               ) : (
                 <>
                   {!task?.isArchived && (
-                    <Button onClick={openArchiveConfirmationModal} size="middle" type="primary">
-                      Archiwizuj
-                    </Button>
+                    <Tooltip title={!canArchive && "Archiwizacja możliwa tylko w końcowym statusie."}>
+                      <Button onClick={openArchiveConfirmationModal} size="middle" type="primary" disabled={!canArchive}>
+                        Archiwizuj
+                      </Button>
+                    </Tooltip>
                   )}
-                  <Button onClick={openConfirmationModal} size="middle">
-                    Usuń
-                  </Button>
+                  <Tooltip title={!canDelete && "Usunięcie możliwe tylko w początkowym lub końcowym statusie."}>
+                    <Button onClick={openConfirmationModal} size="middle" disabled={!canDelete}>
+                      Usuń
+                    </Button>
+                  </Tooltip>
                   {!task?.isArchived && (
                     <Button onClick={openEditMode} type="primary" size="middle">
                       Edytuj
