@@ -48,7 +48,7 @@ const AssignedUsersModal = ({
   };
 
   return (
-    <Modal title="Przypisani użytkownicy" open={open} onOk={onOk} onCancel={onClose}>
+    <Modal title="Przypisani użytkownicy" open={open} onOk={onOk} onCancel={onClose} cancelText="Anuluj">
       {isOwner && (
         <Row style={{ marginBottom: "10px" }}>
           <Col span={18}>
@@ -71,7 +71,7 @@ const AssignedUsersModal = ({
             />
           </Col>
           <Col span={4} offset={2}>
-            <Button shape="circle" type="primary" icon={<SaveOutlined />} onClick={addUser} />
+            <Button shape="circle" type="primary" icon={<SaveOutlined />} onClick={addUser} disabled={!selectedUser} />
           </Col>
         </Row>
       )}

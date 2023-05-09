@@ -16,6 +16,7 @@ import { getBoard, updateBoard, deleteBoard } from "../api/boards";
 import { changeTaskOrder, changeTaskStatus, getTasks } from "../api/tasks";
 import { searchPhrase, filterUser } from "../redux/tasksSlice";
 import { COLUMN_TYPE_MAP } from "../constants";
+import { DeleteOutlined, EditFilled, PlusCircleOutlined, UnorderedListOutlined, UsergroupAddOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -191,6 +192,11 @@ const BoardPage: React.FC = () => {
     dispatch(searchPhrase(""));
   };
 
+  const gotoTasksList = () => {
+    clearFilters();
+    navigate("/tasks", { state: { boardId: board?.identifier } });
+  };
+
   return (
     <Layout>
       <Layout.Content className="board-content">
@@ -253,21 +259,25 @@ const BoardPage: React.FC = () => {
               allowClear
               value={searchValue}
             />
+            
             {isOwner && (
               <Button type="primary" size="large" onClick={openEditBoardModal} className="action-btn">
-                Edytuj tablicę
+                Edytuj tablicę <EditFilled />
               </Button>
             )}
             {isOwner && (
-              <Button size="large" onClick={openConfirmationModal} className="action-btn">
-                Usuń tablicę
+              <Button size="large" onClick={openConfirmationModal} className="action-btn secondary">
+                Usuń tablicę <DeleteOutlined />
               </Button>
             )}
             <Button type="primary" size="large" onClick={openUsersModal} className="action-btn">
-              Przypisani użytkownicy
+              Użytkownicy <UsergroupAddOutlined />
             </Button>
             <Button type="primary" size="large" onClick={goToCreateTaskPage} className="action-btn">
-              Dodaj zadanie
+              Dodaj zadanie <PlusCircleOutlined />
+            </Button>
+            <Button type="primary" size="large" onClick={gotoTasksList} className="action-btn">
+              Wszystkie zadania <UnorderedListOutlined />
             </Button>
           </div>
         </div>

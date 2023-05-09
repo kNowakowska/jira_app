@@ -11,16 +11,18 @@ export const ResponseInterceptors = (navigate: NavigateFunction) => {
       console.log(error);
       error.config.url;
       error.config.method;
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.clear();
         window.dispatchEvent(new Event("storage"));
         errorAlert("Wymagane zalogowanie!", "");
         navigate("/");
-      } else if (new RegExp(/5\d\d/).test(error.response.status)) {
+      } else if (new RegExp(/5\d\d/).test(error?.response?.status)) {
         errorAlert("Błąd serwera!", "");
-      } else {
+      } else if (error?.response?.data.reasonCode && error?.response?.data.message) {
         console.error(error.message);
-        errorAlert(error.response.data.reasonCode, error.response.data.message);
+        errorAlert(error?.response?.data.reasonCode, error?.response?.data.message);
+      } else {
+        errorAlert(error.code, error.message);
       }
       return Promise.reject(error);
     }

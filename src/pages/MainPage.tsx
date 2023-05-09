@@ -1,9 +1,25 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "../css/MainPage.css";
 import { Layout, Typography, Button } from "antd";
+import { useEffect } from "react";
 
-const MainPage: React.FC = () => {
+type MainPagePropsType = {
+  githubLogin?: boolean;
+};
+
+const MainPage = ({ githubLogin }: MainPagePropsType) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (githubLogin) {
+      const accessToken = searchParams.get("accessToken");
+      const userId = searchParams.get("userIdentifier");
+      if (accessToken && userId) {
+        goHome();
+      }
+    }
+  }, [githubLogin, searchParams]);
 
   const loginHandler = () => {
     navigate("/login");
@@ -13,13 +29,8 @@ const MainPage: React.FC = () => {
     navigate("/sign_up");
   };
 
-  // Example usage of Docker env variables
-  // Should extract it to .env file and fetch these from there.
-  // We should grab the backend url + port from variable from docker.
-  // This is mandatory when we will be building application by compose file.
-  const dockerEnvExample = () => {
-    console.log(process.env.REACT_APP_BACKEND_URL);
-    console.log(process.env.REACT_APP_BACKEND_PORT);
+  const goHome = () => {
+    navigate("/");
   };
 
   return (
@@ -30,9 +41,6 @@ const MainPage: React.FC = () => {
         </Button>
         <Button onClick={signUpHandler} type="primary" size="large" className="btn-margin">
           Zarejestruj się
-        </Button>
-        <Button onClick={dockerEnvExample} type="primary" size="large" className="btn-margin">
-          Test Docker Env
         </Button>
       </Layout.Header>
       <Layout.Content className="main-page-logo">

@@ -6,11 +6,13 @@ import type { UserType } from "../types";
 interface SystemState {
   user: UserType | null;
   isLogged: boolean;
+  githubUrl: string;
 }
 
 const initialState: SystemState = {
   isLogged: false,
   user: null,
+  githubUrl: "",
 };
 
 export const systemSlice = createSlice({
@@ -25,10 +27,13 @@ export const systemSlice = createSlice({
       state.user = action.payload;
       state.isLogged = true;
     },
+    setGithubUrl: (state, action) => {
+      state.githubUrl = action.payload;
+    },
   },
 });
 
-export const { logIn, logOut } = systemSlice.actions;
+export const { logIn, logOut, setGithubUrl } = systemSlice.actions;
 
 export const getLoggedUser = (state: RootState) => state.system.user;
 export const getIsLogged = (state: RootState) => state.system.isLogged;

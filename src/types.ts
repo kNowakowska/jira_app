@@ -53,12 +53,14 @@ export type TaskType = {
   creationDate: string;
   boardColumn: ColumnType;
   taskPriority: TaskPriorityType;
-  loggedTime?: 0;
+  loggedTime?: number;
   assignedUser?: UserType;
   reporter: UserType;
   assignedUserIdentifier?: string;
   orderInColumn: number;
   comments: CommentType[];
+  isArchived: boolean;
+  isDeleted: boolean;
 };
 
 export type CommentType = {

@@ -4,16 +4,15 @@ import { useLocation, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Layout, Space, Typography, Input, Button, Form, Select, Divider } from "antd";
+import { Layout, Space, Typography, Input, Button, Form, Select, Divider, Tooltip } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 
 import { TaskType, ColumnType } from "../types";
 import ConfirmModal from "../components/ConfirmModal";
-import { getTask, createTask, updateTask, deleteTask, logTime, deleteAssignedUser } from "../api/tasks";
+import { getTask, createTask, updateTask, deleteTask, deleteAssignedUser, archiveTask } from "../api/tasks";
 import { useAppSelector } from "../redux/hooks";
 import { TASK_PRIORITY_MAP } from "../constants";
 import Comments from "../components/Comments";
-import LogTimeModal from "../components/LogTimeModal";
 import { getBoard } from "../api/boards";
 
 const { Title } = Typography;
@@ -33,7 +32,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const [task, setTask] = useState<null | TaskType>(null);
   const [editMode, setEditMode] = useState(create);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [logTimeModalOpen, setLogTimeModalOpen] = useState(false);
+  const [confirmArchiveModalOpen, setConfirmArchiveModalOpen] = useState(false);
 
   const [taskMainForm] = Form.useForm<{ title: string; description: string }>();
   const [taskExtraForm] = Form.useForm<{ assignee: string }>();
@@ -41,6 +40,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
   const descValue = Form.useWatch("description", taskMainForm);
   const assigneeValue = Form.useWatch("assignee", taskExtraForm);
   const priorityValue = Form.useWatch("priority", taskExtraForm);
+  const loggedTime = Form.useWatch("loggedTime", taskExtraForm);
 
   useEffect(() => {
     getBoard(state.boardId);
@@ -91,6 +91,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
       title: titleValue,
       description: descValue,
       taskPriority: priorityValue,
+      loggedTime: loggedTime,
     };
     if (assigneeValue) taskData["assignedUserIdentifier" as keyof typeof taskData] = assigneeValue;
     if (task?.identifier) {
@@ -121,28 +122,33 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
       });
   };
 
-  const openLogTimeModal = () => {
-    setLogTimeModalOpen(true);
-  };
-
-  const closeLogTime = () => {
-    setLogTimeModalOpen(false);
-  };
-
-  const handleLogTime = (value: number) => {
-    if (task?.identifier)
-      logTime(task?.identifier, value, (task) => {
-        setTask(task);
-        setLogTimeModalOpen(false);
-      });
-  };
-
   const clearUser = () => {
     if (task?.identifier)
       deleteAssignedUser(task?.identifier, (task) => {
         setTask(task);
       });
+    else taskExtraForm.setFieldValue("assignee", "");
   };
+
+  const openArchiveConfirmationModal = () => {
+    setConfirmArchiveModalOpen(true);
+  };
+
+  const handleArchiveTask = () => {
+    if (task) {
+      setConfirmArchiveModalOpen(false);
+      archiveTask(task.identifier, () => {
+        navigate(`/boards/${state.boardId}`);
+      });
+    }
+  };
+
+  const cancelArchiveTask = () => {
+    setConfirmArchiveModalOpen(false);
+  };
+
+  const canDelete = task && (["TO_DO", "DONE"].includes(task.boardColumn) || task.isArchived);
+  const canArchive = task && task.boardColumn === "DONE" && !task.isArchived;
 
   return (
     <Layout>
@@ -190,7 +196,14 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
               <Title level={4} className="task-comments-title">
                 KOMENTARZE
               </Title>
-              {task?.identifier && <Comments taskId={task?.identifier} onAdd={onCommentAdd} comments={task?.comments || []} />}
+              {task?.identifier && (
+                <Comments
+                  taskId={task?.identifier}
+                  onAdd={onCommentAdd}
+                  comments={task?.comments || []}
+                  readOnly={task?.isArchived}
+                />
+              )}
             </div>
           </div>
           <div className="task-actions">
@@ -226,7 +239,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 <Form.Item
                   label="Użytkownik"
                   name="assignee"
-                  initialValue={task?.assignedUser ? `${task?.assignedUser.firstname} ${task?.assignedUser.surname}` : ""}
+                  initialValue={task?.assignedUser ? task.assignedUser.identifier : ""}
                   className={editMode ? "select-edit" : "select-edit-closed"}
                 >
                   <Select
@@ -244,7 +257,7 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 </Form.Item>
                 {editMode && <Button onClick={clearUser} icon={<CloseOutlined />} type="primary" />}
               </div>
-              <Form.Item label="Priority" name="priority" initialValue={task?.taskPriority || "LOWEST"}>
+              <Form.Item label="Priorytet" name="priority" initialValue={task?.taskPriority || "LOWEST"}>
                 <Select
                   showSearch
                   optionFilterProp="children"
@@ -254,17 +267,10 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                   disabled={!editMode}
                 />
               </Form.Item>
-              {!create && (
-                <Form.Item label="Zalogowany czas" name="loggedTime" initialValue={task?.loggedTime || 0}>
-                  <Input className="login-input" disabled />
-                </Form.Item>
-              )}
+              <Form.Item label="Wycena" name="loggedTime" initialValue={task?.loggedTime || ""}>
+                <Input className="login-input" disabled={!editMode} type="number" />
+              </Form.Item>
             </Form>
-            {task?.assignedUser?.identifier === localStorage.getItem("userId") && (
-              <Button onClick={openLogTimeModal} className="log-time-btn" type="primary">
-                Zaloguj czas
-              </Button>
-            )}
             <div className="task-tools">
               {editMode ? (
                 <>
@@ -277,12 +283,23 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
                 </>
               ) : (
                 <>
-                  <Button onClick={openConfirmationModal} className="btn-margin" size="large">
-                    Usuń
-                  </Button>
-                  <Button onClick={openEditMode} type="primary" className="btn-margin" size="large">
-                    Edytuj
-                  </Button>
+                  {!task?.isArchived && (
+                    <Tooltip title={!canArchive && "Archiwizacja możliwa tylko w końcowym statusie."}>
+                      <Button onClick={openArchiveConfirmationModal} size="middle" type="primary" disabled={!canArchive}>
+                        Archiwizuj
+                      </Button>
+                    </Tooltip>
+                  )}
+                  <Tooltip title={!canDelete && "Usunięcie możliwe tylko w początkowym lub końcowym statusie."}>
+                    <Button onClick={openConfirmationModal} size="middle" disabled={!canDelete}>
+                      Usuń
+                    </Button>
+                  </Tooltip>
+                  {!task?.isArchived && (
+                    <Button onClick={openEditMode} type="primary" size="middle">
+                      Edytuj
+                    </Button>
+                  )}
                 </>
               )}
             </div>
@@ -295,7 +312,13 @@ const TaskPage = ({ create = false }: TaskPageProps) => {
           title="Usuń zadanie"
           description="Ta akcja jest nieodwracalna. Czy na pewno chcesz usunąć to zadanie?"
         />
-        <LogTimeModal open={logTimeModalOpen} loggedTime={task?.loggedTime || 0} onOk={handleLogTime} onCancel={closeLogTime} />
+        <ConfirmModal
+          open={confirmArchiveModalOpen}
+          onOk={handleArchiveTask}
+          onCancel={cancelArchiveTask}
+          title="Archiwizuj zadanie"
+          description="Ta akcja jest nieodwracalna. Czy na pewno chcesz archiwizować to zadanie?"
+        />
       </Layout.Content>
     </Layout>
   );
