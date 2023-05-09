@@ -259,6 +259,7 @@ const BoardPage: React.FC = () => {
               allowClear
               value={searchValue}
             />
+            
             {isOwner && (
               <Button type="primary" size="large" onClick={openEditBoardModal} className="action-btn">
                 Edytuj tablicę <EditFilled />
