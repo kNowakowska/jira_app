@@ -4,6 +4,11 @@ import { useAppSelector } from "../redux/hooks";
 import { useEffect, useState } from "react";
 import { getBoards } from "../api/boards";
 import { UserType } from "../types";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import getBoardReport from "../documents/BoardReport";
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 enum ReportType {
     None = "Brak",
@@ -38,8 +43,12 @@ const Reports = () => {
     }, [boards])
 
     const generateReport = () => {
-        console.log("report")
-    }
+        const board = boards?.find(board => board.identifier === selectedBoard)
+        if (board) {
+            const def = getBoardReport(board)
+            pdfMake.createPdf(def).download();
+        }
+    };
 
     return (
         <Layout>
@@ -72,7 +81,7 @@ const Reports = () => {
                     }
                     <Form.Item >
                         <Button type="primary" onClick={generateReport} disabled={!selectedBoard && !selectedUser}>
-                            Generate report
+                            Generuj raport
                         </Button>
                     </Form.Item>
                 </Form>

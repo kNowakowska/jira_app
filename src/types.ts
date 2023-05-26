@@ -23,6 +23,7 @@ export type BoardType = {
   owner: UserType;
   contributors: UserType[];
   tasks: TaskType[];
+  createdDate?: string;
 };
 
 export type UserType = {
