@@ -31,6 +31,7 @@ export type UserType = {
   firstname: string;
   surname: string;
   email: string;
+  registered?: string;
 };
 
 export type DroppableColumnType = { [key: string]: ColumnDefinitionType };
@@ -70,3 +71,19 @@ export type CommentType = {
   createdDate: string;
   creator: UserType;
 };
+
+export enum ReportType {
+  None = "Brak",
+  Board = "Tabele",
+  User = "Użytkownicy"
+}
+
+export enum UserReportType {
+  withArchived = "withArchived",
+  withoutArchived = "withoutArchived"
+}
+
+export const USER_REPORT_TYPE_MAP = {
+  [UserReportType.withArchived]: "Z zadaniami archiwalnymi",
+  [UserReportType.withoutArchived]: "Bez zadan archiwalnych"
+}

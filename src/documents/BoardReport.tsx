@@ -1,4 +1,4 @@
-import { COLUMN_TYPE_MAP } from '../constants';
+import { COLUMN_TYPE_MAP, TASK_PRIORITY_MAP } from '../constants';
 import { BoardType, ColumnType, TaskType } from '../types';
 import { Alignment, Margins, StyleDictionary } from "pdfmake/interfaces";
 
@@ -19,7 +19,7 @@ const getBoardReport = (board: BoardType) => {
         return getActive().filter(task => task.boardColumn === status).map(({ taskNumber, title, taskPriority, reporter, assignedUser, loggedTime }) => [taskNumber, title, taskPriority, (reporter ? `${reporter.firstname} ${reporter.surname}` : "-"), (assignedUser ? `${assignedUser.firstname} ${assignedUser.surname}` : "-"), loggedTime || "-"]) || []
     }
     const getArchivedTasksRows = () => {
-        return getArchived().map(({ taskNumber, title, taskPriority, reporter, assignedUser, loggedTime }) => [taskNumber, title, taskPriority, (reporter ? `${reporter.firstname} ${reporter.surname}` : "-"), (assignedUser ? `${assignedUser.firstname} ${assignedUser.surname}` : "-"), loggedTime || "-"]) || []
+        return getArchived().map(({ taskNumber, title, taskPriority, reporter, assignedUser, loggedTime }) => [taskNumber, title, TASK_PRIORITY_MAP[taskPriority], (reporter ? `${reporter.firstname} ${reporter.surname}` : "-"), (assignedUser ? `${assignedUser.firstname} ${assignedUser.surname}` : "-"), loggedTime || "-"]) || []
     }
 
     const getTasksNumerByUserId = (userId: string) => {

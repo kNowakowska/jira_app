@@ -1,53 +1,44 @@
 import "../css/Reports.css";
-import { Layout, Form, Select, Button } from "antd";
+import { Layout, Form, Select, Button, Radio } from "antd";
 import { useAppSelector } from "../redux/hooks";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getBoards } from "../api/boards";
-import { UserType } from "../types";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import getBoardReport from "../documents/BoardReport";
+import getUserReport from "../documents/UserReport"
+import { ReportType, USER_REPORT_TYPE_MAP, UserReportType } from "../types";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-enum ReportType {
-    None = "Brak",
-    Board = "Tabele",
-    User = "Użytkownicy"
-}
 
 const Reports = () => {
     const [form] = Form.useForm<{ reportType: ReportType }>();
     const reportType = Form.useWatch("reportType", form);
     const selectedBoard = Form.useWatch("selectedBoard", form);
-    const selectedUser = Form.useWatch("selectedUser", form);
+    const selectedUserType = Form.useWatch("selectedUserType", form);
 
-    const boards = useAppSelector(state => state.boards.owned);
-    const [users, setUsers] = useState<UserType[]>([])
+    const boards = useAppSelector(state => [...(state.boards.owned || []), ...(state.boards.contributed || [])]);
+    const currentUser = useAppSelector(state => state.system.user)
 
     useEffect(() => {
         if (!boards?.length) getBoards();
     }, [])
 
-    useEffect(() => {
-        let usersTmp: UserType[] = [];
-        if (boards) {
-            usersTmp = boards.map(board => [board.owner, ...board.contributors]).flat();
-            usersTmp = usersTmp.filter((value, index, self) =>
-                index === self.findIndex((t) => (
-                    t.identifier === value.identifier
-                ))
-            )
-        }
-        setUsers(usersTmp)
-    }, [boards])
-
     const generateReport = () => {
-        const board = boards?.find(board => board.identifier === selectedBoard)
-        if (board) {
-            const def = getBoardReport(board)
-            pdfMake.createPdf(def).download();
+        if (reportType === ReportType.Board) {
+            const board = boards?.find(board => board.identifier === selectedBoard)
+            if (board) {
+                const def = getBoardReport(board)
+                pdfMake.createPdf(def).download();
+            }
+        } else {
+            if (currentUser) {
+                const def = getUserReport(currentUser, selectedUserType, boards);
+                pdfMake.createPdf(def).download();
+            }
         }
+
     };
 
     return (
@@ -72,15 +63,16 @@ const Reports = () => {
                             </Select>
                         </Form.Item>
                         : reportType === ReportType.User ?
-                            <Form.Item label="Wybierz użytkownika" name="selectedUser">
-                                <Select style={{ minWidth: 150 }}>
-                                    {users?.map(user => <Select.Option value={user.identifier} key={user.identifier}>{`${user.firstname} ${user.surname}`}</Select.Option>)}
-                                </Select>
+                            <Form.Item label="Wybierz rodzaj raportu" name="selectedUserType">
+                                <Radio.Group>
+                                    <Radio value={UserReportType.withArchived}>{USER_REPORT_TYPE_MAP[UserReportType.withArchived]}</Radio>
+                                    <Radio value={UserReportType.withoutArchived}>{USER_REPORT_TYPE_MAP[UserReportType.withoutArchived]}</Radio>
+                                </Radio.Group>
                             </Form.Item>
                             : null
                     }
                     <Form.Item >
-                        <Button type="primary" onClick={generateReport} disabled={!selectedBoard && !selectedUser}>
+                        <Button type="primary" onClick={generateReport} disabled={!selectedBoard && !selectedUserType}>
                             Generuj raport
                         </Button>
                     </Form.Item>
