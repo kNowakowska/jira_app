@@ -9,11 +9,11 @@ export const COLUMN_TYPE_MAP = {
 export const TASK_PRIORITY_MAP = {
   HIGHEST: "Najwyższy",
   MEDIUM: "Średni",
-  LOWEST: "Najniższy",
+  LOWER: "Najniższy",
 };
 
 export const TASK_PRIORITY_COLOR_MAP = {
   HIGHEST: "red",
   MEDIUM: "gold",
-  LOWEST: "green",
+  LOWER: "green",
 };
