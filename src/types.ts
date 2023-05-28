@@ -63,6 +63,7 @@ export type TaskType = {
   comments: CommentType[];
   isArchived: boolean;
   isDeleted: boolean;
+  board: BoardType;
 };
 
 export type CommentType = {
