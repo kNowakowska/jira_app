@@ -10,7 +10,27 @@ const getUserReport = (user: UserType, type: UserReportType, boards: Array<Board
     const activeTasks = [...(ownedBoards?.map(board => board.tasks).flat() || []), ...(contributedBoards?.map(board => board.tasks).flat() || [])].filter(task => !task.isDeleted && !task.isArchived)
     const archivedTasks = [...(ownedBoards?.map(board => board.tasks).flat() || []), ...(contributedBoards?.map(board => board.tasks).flat() || [])].filter(task => task.isArchived && !task.isDeleted)
 
-    const getTasksRows = (tasks: Array<TaskType>) => tasks.map((task: TaskType) => [task.taskNumber, task.title, COLUMN_TYPE_MAP[task.boardColumn], task.taskPriority, (task.loggedTime || "-")])
+    const getTasksRows = (tasks: Array<TaskType>) => tasks.map((task: TaskType) => [task.taskNumber, task.title, COLUMN_TYPE_MAP[task.boardColumn], task.taskPriority, (task.loggedTime || "-"), task.board.name])
+
+    const getSumUpTable = () => {
+        return {
+            style: "tableExample",
+            table: {
+                headerRows: 1,
+                widths: ["*", "*", "*"],
+                body: [
+                    [{ text: "Status", style: "tableHeader" }, { text: "Liczba zadan", style: "tableHeader" }, { text: "Liczba punktów", style: "tableHeader" }],
+                    ...Object.entries(COLUMN_TYPE_MAP).map(([key, value]) => [value, activeTasks.filter(task => task.boardColumn === key).length, activeTasks.filter(task => task.boardColumn === key).reduce((acc, task) => acc + (task.loggedTime || 0), 0)]),
+                    ["Archiwalne", archivedTasks.length, archivedTasks.reduce((acc, task) => acc + (task.loggedTime || 0), 0)]
+                ]
+            },
+            layout: {
+                fillColor: function (rowIndex: number) {
+                    return (rowIndex % 2 === 0) ? '#CCCCCC' : null;
+                }
+            }
+        }
+    }
 
     const generateTasksTable = () => {
         const estimation = activeTasks.reduce((acc: number, task: TaskType) => acc + (task.loggedTime || 0), 0)
@@ -18,11 +38,11 @@ const getUserReport = (user: UserType, type: UserReportType, boards: Array<Board
             style: 'tableExample',
             table: {
                 headerRows: 2,
-                widths: ['*', '*', "*", '*', '*'],
+                widths: ['*', '*', "*", '*', '*', "*"],
                 body: [
-                    [{ text: 'Numer', style: "tableHeader" }, { text: 'Tytuł', style: "tableHeader" }, { text: 'Status', style: "tableHeader" }, { text: 'Priorytet', style: "tableHeader" }, { text: "Wycena", style: "tableHeader" }],
+                    [{ text: 'Numer', style: "tableHeader" }, { text: 'Tytuł', style: "tableHeader" }, { text: 'Status', style: "tableHeader" }, { text: 'Priorytet', style: "tableHeader" }, { text: "Wycena", style: "tableHeader" }, { text: "Projekt", style: "tableHeader" }],
                     ...getTasksRows(activeTasks),
-                    [{ text: `Liczba zadań: ${activeTasks.length}`, colSpan: 3, alignment: "center" as Alignment }, {}, {}, { text: `Wycena: ${estimation}`, colSpan: 2, alignment: "center" as Alignment }, {}]
+                    [{ text: `Liczba zadań: ${activeTasks.length}`, colSpan: 3, alignment: "center" as Alignment }, {}, {}, { text: `Wycena: ${estimation}`, colSpan: 3, alignment: "center" as Alignment }, {}, {}]
                 ]
             },
             layout: {
@@ -42,11 +62,11 @@ const getUserReport = (user: UserType, type: UserReportType, boards: Array<Board
             style: 'tableExample',
             table: {
                 headerRows: 2,
-                widths: ['*', '*', "*", '*', '*'],
+                widths: ['*', '*', "*", '*', '*', '*'],
                 body: [
-                    [{ text: 'Numer', style: "tableHeader" }, { text: 'Tytuł', style: "tableHeader" }, { text: 'Status', style: "tableHeader" }, { text: 'Priorytet', style: "tableHeader" }, { text: "Wycena", style: "tableHeader" }],
+                    [{ text: 'Numer', style: "tableHeader" }, { text: 'Tytuł', style: "tableHeader" }, { text: 'Status', style: "tableHeader" }, { text: 'Priorytet', style: "tableHeader" }, { text: "Wycena", style: "tableHeader" }, { text: "Projekt", style: "tableHeader" }],
                     ...getTasksRows(archivedTasks),
-                    [{ text: `Liczba zadań: ${archivedTasks.length}`, colSpan: 3, alignment: "center" as Alignment }, {}, {}, { text: `Wycena: ${estimation}`, colSpan: 2, alignment: "center" as Alignment }, {}]
+                    [{ text: `Liczba zadań: ${archivedTasks.length}`, colSpan: 3, alignment: "center" as Alignment }, {}, {}, { text: `Wycena: ${estimation}`, colSpan: 3, alignment: "center" as Alignment }, {}, {}]
                 ]
             },
             layout: {
@@ -102,6 +122,11 @@ const getUserReport = (user: UserType, type: UserReportType, boards: Array<Board
         docDefinition.content.push({ text: "Archiwalne zadania: ", margin: [0, 20, 0, 5] as Margins })
         docDefinition.content.push(generateArchivedTasksTable())
     }
+    docDefinition.content.push({
+        text: "Podsumowanie",
+        margin: [0, 10] as Margins
+    })
+    docDefinition.content.push(getSumUpTable())
     return docDefinition;
 };
 
