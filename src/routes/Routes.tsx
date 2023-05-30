@@ -10,6 +10,7 @@ import BoardPage from "../pages/BoardPage";
 import AccountPage from "../pages/AccountPage";
 import CreateBoardPage from "../pages/CreateBoardPage";
 import TaskPage from "../pages/TaskPage";
+import Reports from "../pages/Reports";
 import Navbar from "../components/Navbar";
 
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
@@ -73,6 +74,7 @@ export const MyRoutes: React.FC = () => {
         <Route path="tasks" element={<TasksListContainer />} />
         <Route path="tasks/new_task" element={<TaskPage create />} />
         <Route path="tasks/:id" element={<TaskPage />} />
+        <Route path="reports" element={<Reports />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

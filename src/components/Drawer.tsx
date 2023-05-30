@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Drawer, Menu } from "antd";
 import type { DrawerProps } from "antd/es/drawer";
 import type { MenuProps } from "antd/es/menu";
-import { TableOutlined, UserOutlined, FormOutlined, LogoutOutlined, HomeOutlined } from "@ant-design/icons";
+import { TableOutlined, UserOutlined, FormOutlined, LogoutOutlined, HomeOutlined, CopyOutlined } from "@ant-design/icons";
 
 import { useAppSelector } from "../redux/hooks";
 import { logOut } from "../api/system";
@@ -61,6 +61,7 @@ const CustomDrawer: React.FC<DrawerProps & CustomDrawerType> = ({ onClose, open 
       ),
     ]),
     getItem(<Link to="/new_board">Utwórz nową tablicę</Link>, "create_board", <FormOutlined />),
+    getItem(<Link to="reports">Raporty</Link>, "reports", <CopyOutlined />),
     getItem(<Link to={`/profile/${loggedUser?.identifier}`}>Moje konto</Link>, "profile", <UserOutlined />),
     getItem("Wyloguj się", "log_out", <LogoutOutlined />),
   ];
