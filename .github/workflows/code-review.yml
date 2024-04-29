@@ -3,7 +3,7 @@ name: Code Review
 on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
-    branches: [master]
+    branches: [main]
 
 jobs:
   code-review:
