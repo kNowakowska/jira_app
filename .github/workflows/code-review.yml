@@ -1,0 +1,20 @@
+name: Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    branches: [master]
+
+jobs:
+  code-review:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'AI_CODE_REVIEW')
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Print git diff
+        run: git diff ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
